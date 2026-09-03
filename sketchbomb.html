@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketchbomb — Pictionary</title>
+<style>
+  :root{
+    --ink: #1B1F3B;
+    --ink-2: #262c54;
+    --chalk: #FCFAF4;
+    --red: #D9584B;
+    --line: rgba(245,241,230,0.14);
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0; padding:0; min-height:100vh;
+    background: var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.035) 0, transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(255,255,255,0.035) 0, transparent 45%);
+    color: var(--chalk);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display:flex; align-items:center; justify-content:center;
+    padding: 32px 16px;
+  }
+
+  .stage{
+    width:100%; max-width: 540px;
+    display:flex; flex-direction:column; align-items:center; gap: 24px;
+  }
+
+  .masthead{ text-align:center; }
+
+  .masthead h1{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700; font-style: italic;
+    font-size: clamp(2.4rem, 8vw, 3.4rem);
+    letter-spacing: -0.01em; margin: 0; line-height: 1;
+    transform: rotate(-1.5deg);
+  }
+
+  .masthead h1 span{
+    display:inline-block;
+    border-bottom: 4px solid var(--red);
+    padding-bottom: 4px;
+  }
+
+  .masthead p{
+    margin: 10px 0 0; font-size: 0.95rem;
+    color: rgba(245,241,230,0.6); letter-spacing: 0.02em;
+  }
+
+  /* quantity selector */
+  .qty-row{
+    display:flex; align-items:center; gap: 12px;
+    font-size: 0.9rem; color: rgba(245,241,230,0.65);
+  }
+
+  .qty-row select{
+    background: var(--ink-2);
+    border: 1.5px solid rgba(245,241,230,0.2);
+    color: var(--chalk);
+    font-size: 0.95rem; font-weight: 600;
+    padding: 7px 14px; border-radius: 10px;
+    cursor: pointer; outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FCFAF4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 32px;
+  }
+
+  .qty-row select:focus{
+    border-color: rgba(245,241,230,0.45);
+  }
+
+  /* card */
+  .card{
+    width:100%; background: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 20px;
+    padding: clamp(28px, 7vw, 48px) 28px;
+    display:flex; flex-direction:column; align-items:center; gap: 16px;
+    position:relative; overflow:hidden;
+    min-height: 180px; justify-content:center;
+  }
+
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0;
+    height: 5px; background: var(--red);
+  }
+
+  .words-grid{
+    display:flex; flex-direction:column; align-items:center;
+    gap: 10px; width:100%;
+  }
+
+  .word-item{
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700; text-align:center; line-height: 1.2;
+    opacity: 0; transform: translateY(6px) scale(0.98);
+    width: 100%;
+  }
+
+  /* font sizes shrink as count grows */
+  .count-1 .word-item { font-size: clamp(1.9rem, 7vw, 2.8rem); }
+  .count-2 .word-item { font-size: clamp(1.5rem, 5vw, 2.1rem); }
+  .count-3 .word-item { font-size: clamp(1.25rem, 4vw, 1.7rem); }
+  .count-4 .word-item { font-size: clamp(1.1rem, 3.5vw, 1.45rem); }
+
+  .word-item:not(:last-child){
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .word-item.show{
+    animation: pop 0.38s cubic-bezier(.2,.9,.3,1.3) forwards;
+  }
+
+  @keyframes pop{
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .placeholder{
+    color: rgba(245,241,230,0.32); font-size: 1rem; text-align:center;
+  }
+
+  .remaining{
+    font-size: 0.75rem; color: rgba(245,241,230,0.35);
+    letter-spacing: 0.04em; display:none;
+  }
+
+  .generate-btn{
+    width:100%; padding: 18px; border-radius: 16px; border: none;
+    background: var(--chalk); color: var(--ink);
+    font-size: 1.15rem; font-weight: 700; letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.28);
+  }
+
+  .generate-btn:active{
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.28);
+  }
+
+  .footer-row{
+    display:flex; justify-content: space-between; align-items:center;
+    width:100%; font-size: 0.82rem; color: rgba(245,241,230,0.4);
+  }
+
+  .footer-row button{
+    background:none; border:none; color: rgba(245,241,230,0.55);
+    font-size: 0.82rem; text-decoration: underline; cursor:pointer; padding:0;
+  }
+
+  .footer-row button:hover{ color: var(--chalk); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="masthead">
+    <h1><span>Sketchbomb</span></h1>
+    <p>hit the button, start drawing</p>
+  </div>
+
+  <div class="qty-row">
+    <span>Words per round:</span>
+    <select id="qtySelect">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+  </div>
+
+  <div class="card" id="card">
+    <div class="words-grid count-1" id="wordsGrid">
+      <div class="placeholder" id="placeholder">your word will appear here</div>
+    </div>
+    <div class="remaining" id="remaining"></div>
+  </div>
+
+  <button class="generate-btn" id="generateBtn">Generate</button>
+
+  <div class="footer-row">
+    <span id="counter">0 words drawn this round</span>
+    <button id="resetBtn">reset used words</button>
+  </div>
+</div>
+
+<script>
+const WORDS = [
+  // --- actions & situations ---
+  "Sleepwalking","Hitchhiking","Eavesdropping","Trespassing","Photobombing",
+  "Skydiving","Sleepover","Bungee jumping","Impersonation","Ghosting",
+  "Catfishing","Stalking","Doomscrolling","Cosplay","Streaking","Planking",
+  "LARPing","Daydreaming","Shapeshifting","Levitation","Teleportation",
+  "Cloaking","Hypnosis","Gaslighting","Brainwashing","Manipulation",
+  "Smuggling","Surveillance","Disguise","Stakeout","Jailbreak","Ambush",
+  "Standoff","Heist","Hostage","Blackmail","Decoy","Manhunt","Evacuation",
+  "Assassination","Protest","Riot","Siege","Deportation","Exile","Coup",
+
+  // --- disasters & nature events ---
+  "Avalanche","Blizzard","Tsunami","Earthquake","Tornado","Wildfire",
+  "Volcanic eruption","Meteor shower","Solar eclipse","Northern lights",
+  "Infestation","Contamination","Radiation","Detonation","Blackout",
+
+  // --- conditions & feelings ---
+  "Insomnia","Amnesia","Claustrophobia","Paranoia","Nostalgia","Wanderlust",
+  "Homesickness","Heartbreak","Arachnophobia","Acrophobia","Agoraphobia",
+  "Nyctophobia","Trypophobia","Narcolepsy","Vertigo","Seasickness","Sunstroke",
+  "Hypothermia","Frostbite","Whiplash","Concussion","Nausea","Catatonia",
+  "Hallucination","Intoxication","Overdose","Suffocation","Electrocution",
+  "Dehydration","Starvation","Tinnitus","Jet lag","Cabin fever","Burnout",
+  "Impostor syndrome","Separation anxiety","Peer pressure","Culture shock",
+  "Commitment phobia","Jealousy","Loneliness",
+
+  // --- science & creatures ---
+  "Metamorphosis","Hibernation","Camouflage","Migration","Cloning",
+  "Cryogenics","Cyborg","Hologram","Photosynthesis","Echolocation",
+  "Bioluminescence","Domestication","Extinction","Fossilization","Petrification",
+  "Decomposition","Symbiosis","Parasite","Scavenger","Predator","Calcification",
+
+  // --- supernatural & sci-fi ---
+  "Reincarnation","Telepathy","Clairvoyance","Poltergeist","Possession",
+  "Exorcism","Werewolf","Deepfake","Ransomware","Hacker","Phishing",
+  "Malware","Encryption",
+
+  // --- people & roles ---
+  "Scapegoat","Martyr","Outcast","Refugee","Vigilante","Informant",
+  "Paparazzo","Influencer","Impersonator","Whistleblower","Dissident","Hitman",
+  "Bounty hunter","Undercover cop","Cult leader","Con artist","Double agent",
+  "Survivalist","Doomsday prepper",
+
+  // --- concepts with drawable scenes ---
+  "Conspiracy","Propaganda","Censorship","Indoctrination","Gentrification",
+  "Superstition","Pilgrimage","Ritual","Asylum","Quarantine","Lockdown",
+  "Pandemic","Outbreak","Epidemic","Blockade","Minefield","Bunker","Airdrop",
+  "Checkpoint","Ransom","Alibi","Getaway","Hideout",
+
+  // --- two-word keepers ---
+  "Time travel","Virtual reality","Speed dating","Blind date",
+  "Writer's block","Flash mob","Cold turkey","Plot twist","Groundhog Day",
+  "Deja vu","Sixth sense","Recurring dream","Chain reaction",
+  "Butterfly effect","Domino effect","Red herring","Shell game",
+  "Urban legend","Ghost town","Ghost ship","Safe house","Dead drop",
+  "Scorched earth","Witch hunt","Mass hysteria","Space race","Cold War",
+  "Arms race","Brain drain","Baby boom","Ice age","Speed run",
+  "Easter egg","Spin the bottle","Getaway car","No man's land",
+  "Bermuda Triangle","Underground railroad","Witness protection",
+  "Parallel parking","Open relationship","Empty nest","Midlife crisis",
+  "Digital detox","Going viral","Cancel culture","Fake news",
+  "Long-distance relationship","Arranged marriage","Booby trap"
+];
+
+let usedIndices = [];
+let drawnCount = 0;
+
+const wordsGrid = document.getElementById("wordsGrid");
+const placeholder = document.getElementById("placeholder");
+const remainingEl = document.getElementById("remaining");
+const counterEl  = document.getElementById("counter");
+const generateBtn = document.getElementById("generateBtn");
+const resetBtn   = document.getElementById("resetBtn");
+const qtySelect  = document.getElementById("qtySelect");
+
+function getWord(){
+  if(usedIndices.length >= WORDS.length) usedIndices = [];
+  let idx;
+  let attempts = 0;
+  do {
+    idx = Math.floor(Math.random() * WORDS.length);
+    attempts++;
+  } while(usedIndices.includes(idx) && attempts < WORDS.length * 2);
+  usedIndices.push(idx);
+  return WORDS[idx];
+}
+
+generateBtn.addEventListener("click", () => {
+  const qty = parseInt(qtySelect.value, 10);
+
+  // clear grid
+  wordsGrid.innerHTML = "";
+  wordsGrid.className = "words-grid count-" + qty;
+
+  const words = [];
+  for(let i = 0; i < qty; i++) words.push(getWord());
+
+  words.forEach((w, i) => {
+    const el = document.createElement("div");
+    el.className = "word-item";
+    el.textContent = w;
+    wordsGrid.appendChild(el);
+    // stagger the pop animation slightly
+    setTimeout(() => el.classList.add("show"), i * 80);
+  });
+
+  const left = WORDS.length - usedIndices.length;
+  remainingEl.style.display = "block";
+  remainingEl.textContent = left + " words left before repeats";
+
+  drawnCount += qty;
+  counterEl.textContent = drawnCount + " word" + (drawnCount === 1 ? "" : "s") + " drawn this round";
+});
+
+resetBtn.addEventListener("click", () => {
+  usedIndices = [];
+  drawnCount = 0;
+  counterEl.textContent = "0 words drawn this round";
+  wordsGrid.innerHTML = '<div class="placeholder">your word will appear here</div>';
+  wordsGrid.className = "words-grid count-1";
+  remainingEl.style.display = "none";
+});
+</script>
+</body>
+</html>
