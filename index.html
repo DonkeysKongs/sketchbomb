@@ -179,6 +179,7 @@
   }
   .rulebook-btn{ right: 16px; }
   .score-btn{ right: 68px; }
+  .teams-btn{ right: 120px; }
 
   /* overlay */
   .modal-overlay{
@@ -312,12 +313,86 @@
     font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0;
   }
   .score-reset-btn:hover{ color: var(--chalk); }
+
+  /* team randomizer */
+  .team-mode-toggle{
+    display: flex; gap: 8px; padding: 16px 20px 0;
+  }
+  .team-mode-btn{
+    flex: 1; padding: 9px 6px; border-radius: 10px;
+    border: 1.5px solid rgba(245,241,230,0.15);
+    background: transparent; color: rgba(245,241,230,0.55);
+    font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .team-mode-btn.active{
+    background: var(--red); border-color: var(--red); color: #fff;
+  }
+
+  .teams-grid{
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 14px 20px 6px;
+  }
+  .team-card{
+    background: rgba(0,0,0,0.2); border-radius: 12px;
+    padding: 12px 16px;
+    opacity: 0; transform: translateY(6px);
+  }
+  .team-card.show{
+    animation: pop 0.35s cubic-bezier(.2,.9,.3,1.3) forwards;
+  }
+  .team-label{
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--red); margin-bottom: 6px;
+  }
+  .team-members{
+    font-size: 1rem; font-weight: 600; color: var(--chalk);
+    line-height: 1.5;
+  }
+
+  .teams-actions{
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 20px 18px;
+  }
+  .reshuffle-btn{
+    padding: 10px 20px; border-radius: 10px; border: none;
+    background: var(--chalk); color: var(--ink);
+    font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.25);
+  }
+  .reshuffle-btn:active{ transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.25); }
+  .teams-placeholder{
+    color: rgba(245,241,230,0.3); font-size: 0.9rem; text-align: center;
+    padding: 20px; width: 100%;
+  }
 </style>
 </head>
 <body>
 <!-- corner buttons -->
+<button class="corner-btn teams-btn" id="teamsBtn" title="Team Randomizer">🎲</button>
 <button class="corner-btn score-btn" id="scoreBoardBtn" title="Scoreboard">🏆</button>
 <button class="corner-btn rulebook-btn" id="rulebookBtn" title="Rulebook">📖</button>
+
+<!-- teams modal -->
+<div class="modal-overlay" id="teamsOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🎲 Team Randomizer</h2>
+      <button class="close-btn" id="teamsCloseBtn">✕</button>
+    </div>
+    <div class="team-mode-toggle">
+      <button class="team-mode-btn active" id="mode42" data-teams="4" data-size="2">4 teams of 2</button>
+      <button class="team-mode-btn" id="mode24" data-teams="2" data-size="4">2 teams of 4</button>
+    </div>
+    <div class="teams-grid" id="teamsGrid">
+      <div class="teams-placeholder">Hit shuffle to randomize teams</div>
+    </div>
+    <div class="teams-actions">
+      <button class="reshuffle-btn" id="reshuffleBtn">🔀 Shuffle</button>
+    </div>
+  </div>
+</div>
 
 <!-- scoreboard modal -->
 <div class="modal-overlay" id="scoreOverlay">
@@ -446,7 +521,11 @@ const WORDS = [
   "Long-distance relationship","Arranged marriage","Booby trap"
 ];
 
-let usedIndices = [];
+const USED_KEY = "sketchbomb_used";
+let usedIndices = (() => {
+  try { return JSON.parse(localStorage.getItem(USED_KEY)) || []; }
+  catch(e){ return []; }
+})();
 let drawnCount = 0;
 
 const wordsGrid = document.getElementById("wordsGrid");
@@ -459,13 +538,13 @@ const qtySelect  = document.getElementById("qtySelect");
 
 function getWord(){
   if(usedIndices.length >= WORDS.length) usedIndices = [];
-  let idx;
-  let attempts = 0;
+  let idx, attempts = 0;
   do {
     idx = Math.floor(Math.random() * WORDS.length);
     attempts++;
   } while(usedIndices.includes(idx) && attempts < WORDS.length * 2);
   usedIndices.push(idx);
+  localStorage.setItem(USED_KEY, JSON.stringify(usedIndices));
   return WORDS[idx];
 }
 
@@ -498,6 +577,7 @@ generateBtn.addEventListener("click", () => {
 
 resetBtn.addEventListener("click", () => {
   usedIndices = [];
+  localStorage.removeItem(USED_KEY);
   drawnCount = 0;
   counterEl.textContent = "0 words drawn this round";
   wordsGrid.innerHTML = '<div class="placeholder">your word will appear here</div>';
@@ -601,6 +681,58 @@ scoreBoardBtn.addEventListener("click", () => { renderScores(); scoreOverlay.cla
 scoreCloseBtn.addEventListener("click", () => scoreOverlay.classList.remove("open"));
 scoreOverlay.addEventListener("click", e => { if(e.target === scoreOverlay) scoreOverlay.classList.remove("open"); });
 scoreResetBtn.addEventListener("click", () => { saveScores({}); renderScores(); });
+
+// --- team randomizer ---
+const TEAM_NAMES = ["Team 1","Team 2","Team 3","Team 4"];
+const TEAM_COLORS = ["#D9584B","#6C7BD1","#4FB477","#E3A93B"];
+
+const teamsBtn       = document.getElementById("teamsBtn");
+const teamsOverlay   = document.getElementById("teamsOverlay");
+const teamsCloseBtn  = document.getElementById("teamsCloseBtn");
+const teamsGrid      = document.getElementById("teamsGrid");
+const reshuffleBtn   = document.getElementById("reshuffleBtn");
+const modeBtns       = document.querySelectorAll(".team-mode-btn");
+
+let teamCount = 4, teamSize = 2;
+
+modeBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    modeBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    teamCount = parseInt(btn.dataset.teams);
+    teamSize  = parseInt(btn.dataset.size);
+    renderTeams();
+  });
+});
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderTeams(){
+  const shuffled = shuffle(PLAYERS);
+  teamsGrid.innerHTML = "";
+  for(let t = 0; t < teamCount; t++){
+    const members = shuffled.slice(t * teamSize, t * teamSize + teamSize);
+    const card = document.createElement("div");
+    card.className = "team-card";
+    card.innerHTML = `
+      <div class="team-label" style="color:${TEAM_COLORS[t]}">${TEAM_NAMES[t]}</div>
+      <div class="team-members">${members.join(" · ")}</div>`;
+    teamsGrid.appendChild(card);
+    setTimeout(() => card.classList.add("show"), t * 80);
+  }
+}
+
+teamsBtn.addEventListener("click", () => teamsOverlay.classList.add("open"));
+teamsCloseBtn.addEventListener("click", () => teamsOverlay.classList.remove("open"));
+teamsOverlay.addEventListener("click", e => { if(e.target === teamsOverlay) teamsOverlay.classList.remove("open"); });
+reshuffleBtn.addEventListener("click", renderTeams);
 </script>
 </body>
 </html>
