@@ -159,24 +159,26 @@
 
   .footer-row button:hover{ color: var(--chalk); }
 
-  /* rulebook button */
-  .rulebook-btn{
-    position: fixed; top: 16px; right: 16px;
+  /* fixed corner buttons */
+  .corner-btn{
+    position: fixed; top: 16px;
     width: 44px; height: 44px; border-radius: 50%;
     background: var(--ink-2);
     border: 1.5px solid rgba(245,241,230,0.2);
     color: var(--chalk); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
+    line-height: 1; font-size: 1.1rem; padding: 0;
     transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
     z-index: 100;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
-  .rulebook-btn:hover{
+  .corner-btn:hover{
     transform: scale(1.08);
     border-color: rgba(245,241,230,0.5);
     background: #303868;
   }
+  .rulebook-btn{ right: 16px; }
+  .score-btn{ right: 68px; }
 
   /* overlay */
   .modal-overlay{
@@ -261,11 +263,75 @@
     margin-top: 10px; font-size: 0.75rem;
     color: rgba(245,241,230,0.35); text-align: right;
   }
+
+  /* scoreboard */
+  .score-list{
+    display: flex; flex-direction: column; gap: 8px;
+    padding: 16px 20px 20px;
+  }
+  .score-row{
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(0,0,0,0.18); border-radius: 12px;
+    padding: 10px 14px;
+  }
+  .score-rank{
+    font-size: 0.8rem; font-weight: 700; color: rgba(245,241,230,0.35);
+    width: 20px; text-align: center; flex-shrink: 0;
+  }
+  .score-rank.gold   { color: #f5c842; }
+  .score-rank.silver { color: #b0b8c8; }
+  .score-rank.bronze { color: #cd7f4a; }
+  .score-name{
+    flex: 1; font-weight: 600; font-size: 0.97rem; text-transform: capitalize;
+  }
+  .score-controls{
+    display: flex; align-items: center; gap: 6px;
+  }
+  .score-val{
+    font-family: Georgia, serif; font-weight: 700;
+    font-size: 1.1rem; min-width: 28px; text-align: center;
+  }
+  .score-inc, .score-dec{
+    width: 30px; height: 30px; border-radius: 8px; border: none;
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, transform 0.1s;
+  }
+  .score-inc{ background: var(--red); color: #fff; }
+  .score-inc:active{ transform: scale(0.92); }
+  .score-dec{ background: rgba(245,241,230,0.1); color: rgba(245,241,230,0.6); }
+  .score-dec:active{ transform: scale(0.92); }
+  .score-dec:disabled{ opacity: 0.3; cursor: default; }
+
+  .score-footer{
+    padding: 0 20px 16px;
+    display: flex; justify-content: flex-end;
+  }
+  .score-reset-btn{
+    background: none; border: none; color: rgba(245,241,230,0.4);
+    font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0;
+  }
+  .score-reset-btn:hover{ color: var(--chalk); }
 </style>
 </head>
 <body>
-<!-- rulebook button -->
-<button class="rulebook-btn" id="rulebookBtn" title="Rulebook">📖</button>
+<!-- corner buttons -->
+<button class="corner-btn score-btn" id="scoreBoardBtn" title="Scoreboard">🏆</button>
+<button class="corner-btn rulebook-btn" id="rulebookBtn" title="Rulebook">📖</button>
+
+<!-- scoreboard modal -->
+<div class="modal-overlay" id="scoreOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🏆 Scoreboard</h2>
+      <button class="close-btn" id="scoreCloseBtn">✕</button>
+    </div>
+    <div class="score-list" id="scoreList"></div>
+    <div class="score-footer">
+      <button class="score-reset-btn" id="scoreResetBtn">reset all scores</button>
+    </div>
+  </div>
+</div>
 
 <!-- rulebook modal -->
 <div class="modal-overlay" id="modalOverlay">
@@ -475,6 +541,66 @@ rulesTextarea.addEventListener("input", () => {
 
 // start locked
 setLocked(true);
+
+// --- scoreboard ---
+const PLAYERS = ["Frank","Asher","Ethan","Rikhin","Henry","Jake","Eli","Dylan"];
+const SCORE_KEY = "sketchbomb_scores";
+
+const scoreOverlay  = document.getElementById("scoreOverlay");
+const scoreBoardBtn = document.getElementById("scoreBoardBtn");
+const scoreCloseBtn = document.getElementById("scoreCloseBtn");
+const scoreResetBtn = document.getElementById("scoreResetBtn");
+const scoreList     = document.getElementById("scoreList");
+
+function loadScores(){
+  try { return JSON.parse(localStorage.getItem(SCORE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveScores(s){ localStorage.setItem(SCORE_KEY, JSON.stringify(s)); }
+
+function renderScores(){
+  const scores = loadScores();
+  // sort by score desc
+  const sorted = [...PLAYERS].sort((a,b) => (scores[b]||0) - (scores[a]||0));
+  scoreList.innerHTML = "";
+  sorted.forEach((name, i) => {
+    const val = scores[name] || 0;
+    const rankClass = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
+    const rankLabel = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
+    const row = document.createElement("div");
+    row.className = "score-row";
+    row.innerHTML = `
+      <div class="score-rank ${rankClass}">${rankLabel}</div>
+      <div class="score-name">${name}</div>
+      <div class="score-controls">
+        <button class="score-dec" data-name="${name}" ${val <= 0 ? "disabled" : ""}>−</button>
+        <div class="score-val">${val}</div>
+        <button class="score-inc" data-name="${name}">+</button>
+      </div>`;
+    scoreList.appendChild(row);
+  });
+
+  // attach button events
+  scoreList.querySelectorAll(".score-inc").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const s = loadScores();
+      s[btn.dataset.name] = (s[btn.dataset.name] || 0) + 1;
+      saveScores(s); renderScores();
+    });
+  });
+  scoreList.querySelectorAll(".score-dec").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const s = loadScores();
+      s[btn.dataset.name] = Math.max(0, (s[btn.dataset.name] || 0) - 1);
+      saveScores(s); renderScores();
+    });
+  });
+}
+
+scoreBoardBtn.addEventListener("click", () => { renderScores(); scoreOverlay.classList.add("open"); });
+scoreCloseBtn.addEventListener("click", () => scoreOverlay.classList.remove("open"));
+scoreOverlay.addEventListener("click", e => { if(e.target === scoreOverlay) scoreOverlay.classList.remove("open"); });
+scoreResetBtn.addEventListener("click", () => { saveScores({}); renderScores(); });
 </script>
 </body>
 </html>
