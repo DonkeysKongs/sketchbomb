@@ -53,31 +53,6 @@
     color: rgba(245,241,230,0.6); letter-spacing: 0.02em;
   }
 
-  /* quantity selector */
-  .qty-row{
-    display:flex; align-items:center; gap: 12px;
-    font-size: 0.9rem; color: rgba(245,241,230,0.65);
-  }
-
-  .qty-row select{
-    background: var(--ink-2);
-    border: 1.5px solid rgba(245,241,230,0.2);
-    color: var(--chalk);
-    font-size: 0.95rem; font-weight: 600;
-    padding: 7px 14px; border-radius: 10px;
-    cursor: pointer; outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FCFAF4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 32px;
-  }
-
-  .qty-row select:focus{
-    border-color: rgba(245,241,230,0.45);
-  }
-
   /* card */
   .card{
     width:100%; background: var(--ink-2);
@@ -105,11 +80,14 @@
     width: 100%;
   }
 
-  /* font sizes shrink as count grows */
-  .count-1 .word-item { font-size: clamp(1.9rem, 7vw, 2.8rem); }
+  /* font sizes — always 2 words */
   .count-2 .word-item { font-size: clamp(1.5rem, 5vw, 2.1rem); }
-  .count-3 .word-item { font-size: clamp(1.25rem, 4vw, 1.7rem); }
-  .count-4 .word-item { font-size: clamp(1.1rem, 3.5vw, 1.45rem); }
+
+  .word-team-label{
+    font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(245,241,230,0.38);
+    margin-bottom: 2px;
+  }
 
   .word-item:not(:last-child){
     padding-bottom: 10px;
@@ -428,17 +406,7 @@
 <div class="stage">
   <div class="masthead">
     <h1><span>Sketchbomb</span></h1>
-    <p>hit the button, start drawing</p>
-  </div>
-
-  <div class="qty-row">
-    <span>Words per round:</span>
-    <select id="qtySelect">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-    </select>
+    <p>one word per team — hit generate</p>
   </div>
 
   <div class="card" id="card">
@@ -457,131 +425,249 @@
 </div>
 
 <script>
+// Each entry: [word, weight]
+// Weight 3 = hard/abstract/sound-it-out — comes up most often
+// Weight 2 = solid mid-challenge drawables
+// Weight 1 = simpler or very visual, sprinkled in
 const WORDS = [
-  // --- actions & situations ---
-  "Sleepwalking","Hitchhiking","Eavesdropping","Trespassing","Photobombing",
-  "Skydiving","Sleepover","Bungee jumping","Impersonation","Ghosting",
-  "Catfishing","Stalking","Doomscrolling","Cosplay","Streaking","Planking",
-  "LARPing","Daydreaming","Shapeshifting","Levitation","Teleportation",
-  "Cloaking","Hypnosis","Gaslighting","Brainwashing","Manipulation",
-  "Smuggling","Surveillance","Disguise","Stakeout","Jailbreak","Ambush",
-  "Standoff","Heist","Hostage","Blackmail","Decoy","Manhunt","Evacuation",
-  "Assassination","Protest","Riot","Siege","Deportation","Exile","Coup",
 
-  // --- disasters & nature events ---
-  "Avalanche","Blizzard","Tsunami","Earthquake","Tornado","Wildfire",
-  "Volcanic eruption","Meteor shower","Solar eclipse","Northern lights",
-  "Infestation","Contamination","Radiation","Detonation","Blackout",
+  // ── WEIGHT 3: hard, abstract, sound-it-out ──────────────────────────────
 
-  // --- conditions & feelings ---
-  "Insomnia","Amnesia","Claustrophobia","Paranoia","Nostalgia","Wanderlust",
-  "Homesickness","Heartbreak","Arachnophobia","Acrophobia","Agoraphobia",
-  "Nyctophobia","Trypophobia","Narcolepsy","Vertigo","Seasickness","Sunstroke",
-  "Hypothermia","Frostbite","Whiplash","Concussion","Nausea","Catatonia",
-  "Hallucination","Intoxication","Overdose","Suffocation","Electrocution",
-  "Dehydration","Starvation","Tinnitus","Jet lag","Cabin fever","Burnout",
-  "Impostor syndrome","Separation anxiety","Peer pressure","Culture shock",
-  "Commitment phobia","Jealousy","Loneliness",
+  // existing hard singles
+  ["Claustrophobia",3],["Arachnophobia",3],["Narcolepsy",3],["Bioluminescence",3],
+  ["Metamorphosis",3],["Hallucination",3],["Electrocution",3],["Decomposition",3],
+  ["Impersonation",3],["Reincarnation",3],["Photosynthesis",3],["Echolocation",3],
+  ["Fossilization",3],["Petrification",3],["Contamination",3],["Infestation",3],
+  ["Assassination",3],["Indoctrination",3],["Exorcism",3],["Ventriloquist",3],
+  ["Suffocation",3],["Hibernation",3],["Domestication",3],["Excommunication",3],
+  ["Fermentation",3],["Cannibalism",3],["Resurrection",3],["Levitation",3],
+  ["Teleportation",3],["Doppelganger",3],["Deterioration",3],["Cataclysm",3],
+  ["Phenomenon",3],["Sarcophagus",3],["Conquistador",3],["Catastrophe",3],
+  ["Hypochondria",3],["Autobiography",3],["Shapeshifting",3],["Decapitation",3],
 
-  // --- science & creatures ---
-  "Metamorphosis","Hibernation","Camouflage","Migration","Cloning",
-  "Cryogenics","Cyborg","Hologram","Photosynthesis","Echolocation",
-  "Bioluminescence","Domestication","Extinction","Fossilization","Petrification",
-  "Decomposition","Symbiosis","Parasite","Scavenger","Predator","Calcification",
+  // abstract concepts (drawable with effort)
+  ["Procrastination",3],["Serendipity",3],["Coincidence",3],["Hypocrisy",3],
+  ["Cognitive dissonance",3],["Stockholm syndrome",3],["Existential crisis",3],
+  ["Miscommunication",3],["Overthinking",3],["Paradox",3],
 
-  // --- supernatural & sci-fi ---
-  "Reincarnation","Telepathy","Clairvoyance","Poltergeist","Possession",
-  "Exorcism","Werewolf","Deepfake","Ransomware","Hacker","Phishing",
-  "Malware","Encryption",
+  // "shouldn't be drawable" — great for sound-it-out
+  ["Awkward silence",3],["Secondhand embarrassment",3],["Jumping to conclusions",3],
+  ["Walking on eggshells",3],["Breaking the ice",3],["Thinking outside the box",3],
+  ["A slippery slope",3],["The elephant in the room",3],["A blessing in disguise",3],
+  ["A double-edged sword",3],["A guilty conscience",3],["A gut feeling",3],
+  ["Reading between the lines",3],["Missing the point",3],["A vicious cycle",3],
+  ["Losing your train of thought",3],["A change of heart",3],
 
-  // --- people & roles ---
-  "Scapegoat","Martyr","Outcast","Refugee","Vigilante","Informant",
-  "Paparazzo","Influencer","Impersonator","Whistleblower","Dissident","Hitman",
-  "Bounty hunter","Undercover cop","Cult leader","Con artist","Double agent",
-  "Survivalist","Doomsday prepper",
+  // nearly-impossible objects
+  ["Rube Goldberg machine",3],["Circuit breaker",3],["Stud finder",3],
+  ["Carbon monoxide detector",3],["Surge protector",3],["Tire pressure gauge",3],
+  ["Paper shredder",3],["Smoke detector",3],["Barcode scanner",3],
+  ["QR code",3],["USB dongle",3],["HDMI adapter",3],
 
-  // --- concepts with drawable scenes ---
-  "Conspiracy","Propaganda","Censorship","Indoctrination","Gentrification",
-  "Superstition","Pilgrimage","Ritual","Asylum","Quarantine","Lockdown",
-  "Pandemic","Outbreak","Epidemic","Blockade","Minefield","Bunker","Airdrop",
-  "Checkpoint","Ransom","Alibi","Getaway","Hideout",
+  // obscure science (keep only the drawable-ish ones)
+  ["Circadian rhythm",3],["Placebo effect",3],["Doppler effect",3],
+  ["Radioactive decay",3],["Natural selection",3],["Genetic mutation",3],
+  ["Nuclear fission",3],["Osmosis",3],["Entropy",3],["Supernova",3],
+  ["Tectonic plate",3],["Singularity",3],["Black hole",3],["Mycelium",3],
 
-  // --- two-word keepers ---
-  "Time travel","Virtual reality","Speed dating","Blind date",
-  "Writer's block","Flash mob","Cold turkey","Plot twist","Groundhog Day",
-  "Deja vu","Sixth sense","Recurring dream","Chain reaction",
-  "Butterfly effect","Domino effect","Red herring","Shell game",
-  "Urban legend","Ghost town","Ghost ship","Safe house","Dead drop",
-  "Scorched earth","Witch hunt","Mass hysteria","Space race","Cold War",
-  "Arms race","Brain drain","Baby boom","Ice age","Speed run",
-  "Easter egg","Spin the bottle","Getaway car","No man's land",
-  "Bermuda Triangle","Underground railroad","Witness protection",
-  "Parallel parking","Open relationship","Empty nest","Midlife crisis",
-  "Digital detox","Going viral","Cancel culture","Fake news",
-  "Long-distance relationship","Arranged marriage","Booby trap"
+  // ── WEIGHT 2: solid drawables, recognisable scenes ───────────────────────
+
+  // existing mid-tier
+  ["Skydiving",2],["Hitchhiking",2],["Trespassing",2],["Eavesdropping",2],
+  ["Photobombing",2],["Bungee jumping",2],["Avalanche",2],["Blizzard",2],
+  ["Tsunami",2],["Wildfire",2],["Tornado",2],["Earthquake",2],["Pandemic",2],
+  ["Outbreak",2],["Blackout",2],["Riot",2],["Siege",2],["Jailbreak",2],
+  ["Manhunt",2],["Ambush",2],["Standoff",2],["Heist",2],["Stakeout",2],
+  ["Smuggling",2],["Disguise",2],["Hostage",2],["Ransom",2],["Alibi",2],
+  ["Getaway",2],["Hideout",2],["Minefield",2],["Bunker",2],["Airdrop",2],
+  ["Poltergeist",2],["Werewolf",2],["Possession",2],["Clairvoyance",2],
+  ["Telepathy",2],["Wanderlust",2],["Homesickness",2],["Insomnia",2],
+  ["Amnesia",2],["Paranoia",2],["Nostalgia",2],["Cosplay",2],["Doomscrolling",2],
+  ["Deepfake",2],["Cyborg",2],["Hologram",2],["Cryogenics",2],["Cloning",2],
+  ["Vigilante",2],["Bounty hunter",2],["Cult leader",2],["Con artist",2],
+  ["Informant",2],["Paparazzo",2],["Whistleblower",2],["Scapegoat",2],
+  ["Martyr",2],["Propaganda",2],["Censorship",2],["Time travel",2],
+  ["Virtual reality",2],["Ghost ship",2],["Ghost town",2],["Witch hunt",2],
+  ["Mass hysteria",2],["Underground railroad",2],["Witness protection",2],
+  ["Butterfly effect",2],["Domino effect",2],["Red herring",2],
+  ["Urban legend",2],["Scorched earth",2],["Chain reaction",2],
+  ["Conspiracy",2],["Superstition",2],["Pilgrimage",2],["Ritual",2],
+  ["Exile",2],["Refugee",2],["Blockade",2],["Checkpoint",2],["Coup",2],
+
+  // professions (from word bank)
+  ["Fortune teller",2],["Blacksmith",2],["Pickpocket",2],["Archaeologist",2],
+  ["Cartographer",2],["Puppeteer",2],["Beekeeper",2],["Falconer",2],
+  ["Taxidermist",2],["Glassblower",2],["Stuntman",2],["Jockey",2],
+  ["Grave digger",2],["Lighthouse keeper",2],["Auctioneer",2],["Night watchman",2],
+
+  // crime & spy scenes
+  ["Safecracker",2],["Jewel thief",2],["Counterfeiter",2],["Forged painting",2],
+  ["Police lineup",2],["Interrogation room",2],["Escape tunnel",2],
+  ["Getaway driver",2],["Wanted poster",2],["Skeleton key",2],["Vault",2],
+  ["Crime scene",2],["Bloodhound",2],["Security camera",2],["Tripwire",2],
+
+  // sea & mythology
+  ["Shipwreck",2],["Castaway",2],["Treasure island",2],["Desert island",2],
+  ["Message in a bottle",2],["Crow's nest",2],["Kraken",2],["Siren",2],
+  ["Minotaur",2],["Centaur",2],["Griffin",2],["Cyclops",2],["Gargoyle",2],
+  ["Basilisk",2],["Phoenix",2],["Alchemist",2],["Sorcerer",2],
+
+  // medieval / castle
+  ["Castle siege",2],["Medieval banquet",2],["Catapult",2],["Trebuchet",2],
+  ["Battering ram",2],["Dungeon",2],["Torture chamber",2],["Coat of arms",2],
+
+  // sci-fi & space
+  ["Rocket launch",2],["Space station",2],["Moon rover",2],["Asteroid belt",2],
+  ["Lunar crater",2],["Cryogenic chamber",2],["Laser beam",2],["Force field",2],
+  ["Robot dog",2],["Mad scientist",2],["Lab coat",2],["DNA strand",2],
+  ["Dinosaur skeleton",2],["Fossil",2],
+
+  // events & social scenes
+  ["Escape room",2],["Scavenger hunt",2],["Treasure hunt",2],["Magic trick",2],
+  ["Sword swallowing",2],["Fire juggling",2],["Haunted house",2],
+  ["Hall of mirrors",2],["Funhouse mirror",2],["Masquerade",2],
+  ["Parade float",2],["Coronation",2],["Award ceremony",2],
+
+  // weird/tricky objects
+  ["House of cards",2],["Domino chain",2],
+  ["Time bomb",2],["Trapdoor",2],["Secret passage",2],["Hidden compartment",2],
+  ["False bottom",2],["Drawbridge",2],["Spyglass",2],
+
+  // animals
+  ["Platypus",2],["Armadillo",2],["Pangolin",2],["Axolotl",2],["Capybara",2],
+  ["Narwhal",2],["Anglerfish",2],["Pufferfish",2],["Mantis shrimp",2],
+  ["Horseshoe crab",2],["Praying mantis",2],["Stick insect",2],["Venus flytrap",2],
+
+  // nature
+  ["Sinkhole",2],["Geyser",2],["Glacier",2],["Iceberg",2],["Tide pool",2],
+  ["Whirlpool",2],["Oasis",2],["Coral reef",2],["Bamboo forest",2],
+
+  // food & kitchen
+  ["Chocolate fountain",2],["Gingerbread house",2],["Sushi conveyor",2],
+  ["Food truck",2],["Farmers market",2],["Pizza oven",2],["Fondue",2],
+  ["Mortar and pestle",2],["Meat grinder",2],
+
+  // broken/chaos scenes
+  ["Flooded basement",2],["Broken elevator",2],["Traffic jam",2],
+  ["Car accident",2],["Railroad crossing",2],["Hot-air balloon",2],
+  ["Hang glider",2],["Cable car",2],["Drive-in theater",2],
+
+  // clothing & disguise
+  ["Suit of armor",2],["Trench coat",2],["Hazmat suit",2],["Diving suit",2],
+  ["Firefighter gear",2],["Astronaut suit",2],["False mustache",2],
+  ["Disguise kit",2],["Feather boa",2],
+
+  // ── WEIGHT 1: simpler, very visual, sprinkled in ─────────────────────────
+
+  ["Eclipse",1],["Mirage",1],["Quicksand",1],["Stampede",1],["Explosion",1],
+  ["Sabotage",1],["Famine",1],["Drought",1],["Flood",1],["Pirate",1],
+  ["Vampire",1],["Zombie",1],["Mummy",1],["Fugitive",1],["Spy",1],
+  ["Deja vu",1],["Sixth sense",1],["Plot twist",1],["Cold turkey",1],
+  ["Flash mob",1],["Blind date",1],["Writer's block",1],["Jet lag",1],
+  ["Cabin fever",1],["Burnout",1],["Heartbreak",1],["Sleepwalking",1],
+  ["Camouflage",1],["Quarantine",1],["Evacuation",1],
+
+  // simple professions
+  ["Magician",1],["Locksmith",1],["Zookeeper",1],["Park ranger",1],
+  ["Tour guide",1],["Referee",1],["Lifeguard",1],["Tattoo artist",1],
+  ["Street artist",1],["Plumber",1],["Baker",1],["Butcher",1],["Chef",1],
+  ["Sommelier",1],["Jester",1],["Potter",1],["Bard",1],["Knight",1],
+  ["Astronaut",1],["Navigator",1],["Sailor",1],
+
+  // toys & games
+  ["Jack-in-the-box",1],["Yo-yo",1],["Spinning top",1],["Hula hoop",1],
+  ["Stilts",1],["Unicycle",1],["Snow globe",1],["Kite",1],["Puppet",1],
+  ["Rubik's Cube",1],["Chessboard",1],["Dartboard",1],["Pinball machine",1],
+  ["Claw machine",1],["Jump rope",1],
+
+  // simple instruments
+  ["Accordion",1],["Bagpipes",1],["Harmonica",1],["Tuba",1],["Banjo",1],
+  ["Harp",1],["Cello",1],["Metronome",1],["Music box",1],["Megaphone",1],
+
+  // simple nature/food
+  ["Waterfall",1],["Canyon",1],["Sand dune",1],["Hot spring",1],
+  ["Sunflower field",1],["Mushroom ring",1],["Bonsai",1],["Pitcher plant",1],
+  ["Cornucopia",1],["Dragon fruit",1],["Pomegranate",1],["Artichoke",1],
+  ["Cotton candy",1],["Caramel apple",1],["Pretzel",1],["Croissant",1],
+
+  // simple events
+  ["Bonfire",1],["Campout",1],["Talent show",1],["Science fair",1],
+  ["Prom",1],["Carnival",1],["Ferris wheel",1],["Carousel",1],
+  ["Roller coaster",1],["Bumper cars",1],["Dunk tank",1],["Ring toss",1],
+
+  // simple objects
+  ["Hourglass",1],["Sundial",1],["Kaleidoscope",1],
+  ["Grandfather clock",1],["Cuckoo clock",1],["Lava lamp",1],["Hammock",1],
+  ["Rocking chair",1],["Treehouse",1],["Lighthouse",1],["Windmill",1],
+  ["Greenhouse",1],["Watchtower",1],["Observatory",1],
 ];
 
+
+// Build weighted pool: each word's index appears [weight] times
+function buildPool(){
+  const pool = [];
+  WORDS.forEach(([,w], i) => { for(let x = 0; x < w; x++) pool.push(i); });
+  return pool;
+}
+const POOL = buildPool();
+
 const USED_KEY = "sketchbomb_used";
-let usedIndices = (() => {
+let usedWordIndices = (() => {
   try { return JSON.parse(localStorage.getItem(USED_KEY)) || []; }
   catch(e){ return []; }
 })();
 let drawnCount = 0;
 
-const wordsGrid = document.getElementById("wordsGrid");
-const placeholder = document.getElementById("placeholder");
+const wordsGrid  = document.getElementById("wordsGrid");
 const remainingEl = document.getElementById("remaining");
 const counterEl  = document.getElementById("counter");
 const generateBtn = document.getElementById("generateBtn");
 const resetBtn   = document.getElementById("resetBtn");
-const qtySelect  = document.getElementById("qtySelect");
 
 function getWord(){
-  if(usedIndices.length >= WORDS.length) usedIndices = [];
-  let idx, attempts = 0;
-  do {
-    idx = Math.floor(Math.random() * WORDS.length);
-    attempts++;
-  } while(usedIndices.includes(idx) && attempts < WORDS.length * 2);
-  usedIndices.push(idx);
-  localStorage.setItem(USED_KEY, JSON.stringify(usedIndices));
-  return WORDS[idx];
+  let available = POOL.filter(i => !usedWordIndices.includes(i));
+  if(available.length === 0){
+    usedWordIndices = [];
+    localStorage.removeItem(USED_KEY);
+    available = [...POOL];
+  }
+  const pick = available[Math.floor(Math.random() * available.length)];
+  // store the unique word index, not pool index
+  if(!usedWordIndices.includes(pick)) usedWordIndices.push(pick);
+  localStorage.setItem(USED_KEY, JSON.stringify(usedWordIndices));
+  return WORDS[pick][0];
 }
 
 generateBtn.addEventListener("click", () => {
-  const qty = parseInt(qtySelect.value, 10);
-
-  // clear grid
   wordsGrid.innerHTML = "";
-  wordsGrid.className = "words-grid count-" + qty;
+  wordsGrid.className = "words-grid count-2";
 
-  const words = [];
-  for(let i = 0; i < qty; i++) words.push(getWord());
+  const labels = ["Team A", "Team B"];
+  const words  = [getWord(), getWord()];
 
   words.forEach((w, i) => {
     const el = document.createElement("div");
     el.className = "word-item";
-    el.textContent = w;
+    el.innerHTML = `<div class="word-team-label">${labels[i]}</div>${w}`;
     wordsGrid.appendChild(el);
-    // stagger the pop animation slightly
-    setTimeout(() => el.classList.add("show"), i * 80);
+    setTimeout(() => el.classList.add("show"), i * 100);
   });
 
-  const left = WORDS.length - usedIndices.length;
+  const left = WORDS.length - usedWordIndices.length;
   remainingEl.style.display = "block";
   remainingEl.textContent = left + " words left before repeats";
 
-  drawnCount += qty;
-  counterEl.textContent = drawnCount + " word" + (drawnCount === 1 ? "" : "s") + " drawn this round";
+  drawnCount += 2;
+  counterEl.textContent = drawnCount + " words drawn this session";
 });
 
 resetBtn.addEventListener("click", () => {
-  usedIndices = [];
+  usedWordIndices = [];
   localStorage.removeItem(USED_KEY);
   drawnCount = 0;
-  counterEl.textContent = "0 words drawn this round";
-  wordsGrid.innerHTML = '<div class="placeholder">your word will appear here</div>';
-  wordsGrid.className = "words-grid count-1";
+  counterEl.textContent = "0 words drawn this session";
+  wordsGrid.innerHTML = '<div class="placeholder">your words will appear here</div>';
+  wordsGrid.className = "words-grid count-2";
   remainingEl.style.display = "none";
 });
 
