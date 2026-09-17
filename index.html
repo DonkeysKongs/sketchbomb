@@ -92,6 +92,27 @@
     margin-bottom: 2px;
   }
 
+  .word-item{
+    position: relative;
+  }
+
+  .reroll-btn{
+    position: absolute; top: 50%; right: 0;
+    transform: translateY(-50%);
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(245,241,230,0.08);
+    border: 1px solid rgba(245,241,230,0.15);
+    color: rgba(245,241,230,0.4);
+    font-size: 0.75rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    line-height: 1; padding: 0;
+    flex-shrink: 0;
+  }
+  .reroll-btn:hover{
+    background: var(--red); border-color: var(--red); color: #fff;
+  }
+
   .word-item:not(:last-child){
     padding-bottom: 10px;
     border-bottom: 1px solid var(--line);
@@ -666,23 +687,52 @@ qtyBtns.forEach(btn => {
   });
 });
 
+
+const BANNED_KEY = "sketchbomb_banned";
+let bannedIndices = (() => {
+  try { return JSON.parse(localStorage.getItem(BANNED_KEY)) || []; }
+  catch(e){ return []; }
+})();
+
+function saveBanned(){ localStorage.setItem(BANNED_KEY, JSON.stringify(bannedIndices)); }
+
+function updateRemaining(){
+  const left = WORDS.length - bannedIndices.length - usedWordIndices.length;
+  remainingEl.textContent = Math.max(0, left) + " left before repeats";
+}
+
 function getWord(){
-  let available = POOL.filter(i => !usedWordIndices.includes(i));
+  let available = POOL.filter(i => !usedWordIndices.includes(i) && !bannedIndices.includes(i));
   if(available.length === 0){
     usedWordIndices = [];
     localStorage.removeItem(USED_KEY);
-    available = [...POOL];
+    available = POOL.filter(i => !bannedIndices.includes(i));
   }
   const pick = available[Math.floor(Math.random() * available.length)];
-  // store the unique word index, not pool index
   if(!usedWordIndices.includes(pick)) usedWordIndices.push(pick);
   localStorage.setItem(USED_KEY, JSON.stringify(usedWordIndices));
-  return WORDS[pick][0];
+  return { word: WORDS[pick][0], idx: pick };
 }
 
-function updateRemaining(){
-  const left = WORDS.length - usedWordIndices.length;
-  remainingEl.textContent = left + " left before repeats";
+function attachReroll(el, teamLabel){
+  const btn = el.querySelector(".reroll-btn");
+  btn.onclick = null;
+  btn.addEventListener("click", () => {
+    const idx = parseInt(el.dataset.idx);
+    if(!bannedIndices.includes(idx)) bannedIndices.push(idx);
+    saveBanned();
+    usedWordIndices = usedWordIndices.filter(i => i !== idx);
+    localStorage.setItem(USED_KEY, JSON.stringify(usedWordIndices));
+
+    const { word: newWord, idx: newIdx } = getWord();
+    el.dataset.idx = newIdx;
+    el.classList.remove("show");
+    void el.offsetWidth;
+    el.innerHTML = `<div class="word-team-label">${teamLabel}</div>${newWord}<button class="reroll-btn" title="Ban & reroll">✕</button>`;
+    attachReroll(el, teamLabel);
+    el.classList.add("show");
+    updateRemaining();
+  });
 }
 
 generateBtn.addEventListener("click", () => {
@@ -690,12 +740,14 @@ generateBtn.addEventListener("click", () => {
   wordsGrid.className = "words-grid count-" + selectedQty;
 
   const labels = ["Team A","Team B","Team C","Team D"].slice(0, selectedQty);
-  const words  = labels.map(() => getWord());
 
-  words.forEach((w, i) => {
+  labels.forEach((label, i) => {
+    const { word, idx } = getWord();
     const el = document.createElement("div");
     el.className = "word-item";
-    el.innerHTML = `<div class="word-team-label">${labels[i]}</div>${w}`;
+    el.dataset.idx = idx;
+    el.innerHTML = `<div class="word-team-label">${label}</div>${word}<button class="reroll-btn" title="Ban & reroll">✕</button>`;
+    attachReroll(el, label);
     wordsGrid.appendChild(el);
     setTimeout(() => el.classList.add("show"), i * 100);
   });
