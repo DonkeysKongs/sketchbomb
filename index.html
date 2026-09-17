@@ -80,8 +80,11 @@
     width: 100%;
   }
 
-  /* font sizes — always 2 words */
+  /* font sizes scale with word count */
+  .count-1 .word-item { font-size: clamp(1.9rem, 7vw, 2.8rem); }
   .count-2 .word-item { font-size: clamp(1.5rem, 5vw, 2.1rem); }
+  .count-3 .word-item { font-size: clamp(1.25rem, 4vw, 1.7rem); }
+  .count-4 .word-item { font-size: clamp(1.1rem, 3.5vw, 1.45rem); }
 
   .word-team-label{
     font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
@@ -111,6 +114,10 @@
     letter-spacing: 0.04em; display:none;
   }
 
+  .remaining-footer{
+    font-size: 0.82rem; color: rgba(245,241,230,0.4);
+  }
+
   .generate-btn{
     width:100%; padding: 18px; border-radius: 16px; border: none;
     background: var(--chalk); color: var(--ink);
@@ -136,6 +143,22 @@
   }
 
   .footer-row button:hover{ color: var(--chalk); }
+
+  /* qty selector */
+  .qty-row{
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.9rem; color: rgba(245,241,230,0.6);
+  }
+  .qty-btns{ display: flex; gap: 6px; }
+  .qty-btn{
+    width: 40px; height: 36px; border-radius: 10px;
+    border: 1.5px solid rgba(245,241,230,0.18);
+    background: transparent; color: rgba(245,241,230,0.55);
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qty-btn:hover{ border-color: rgba(245,241,230,0.4); color: var(--chalk); }
+  .qty-btn.active{ background: var(--red); border-color: var(--red); color: #fff; }
 
   /* fixed corner buttons */
   .corner-btn{
@@ -360,8 +383,8 @@
       <button class="close-btn" id="teamsCloseBtn">✕</button>
     </div>
     <div class="team-mode-toggle">
-      <button class="team-mode-btn active" id="mode42" data-teams="4" data-size="2">4 teams of 2</button>
-      <button class="team-mode-btn" id="mode24" data-teams="2" data-size="4">2 teams of 4</button>
+      <button class="team-mode-btn active" id="mode24" data-teams="2" data-size="4">2 teams of 4</button>
+      <button class="team-mode-btn" id="mode42" data-teams="4" data-size="2">4 teams of 2</button>
     </div>
     <div class="teams-grid" id="teamsGrid">
       <div class="teams-placeholder">Hit shuffle to randomize teams</div>
@@ -406,20 +429,28 @@
 <div class="stage">
   <div class="masthead">
     <h1><span>Sketchbomb</span></h1>
-    <p>one word per team — hit generate</p>
+    <p>pick how many teams, hit generate</p>
+  </div>
+
+  <div class="qty-row">
+    <span>Teams:</span>
+    <div class="qty-btns">
+      <button class="qty-btn active" data-qty="2">2</button>
+      <button class="qty-btn" data-qty="4">4</button>
+    </div>
   </div>
 
   <div class="card" id="card">
     <div class="words-grid count-1" id="wordsGrid">
       <div class="placeholder" id="placeholder">your word will appear here</div>
     </div>
-    <div class="remaining" id="remaining"></div>
   </div>
 
   <button class="generate-btn" id="generateBtn">Generate</button>
 
   <div class="footer-row">
-    <span id="counter">0 words drawn this round</span>
+    <span id="counter">0 words drawn this session</span>
+    <span id="remaining" class="remaining-footer"></span>
     <button id="resetBtn">reset used words</button>
   </div>
 </div>
@@ -623,6 +654,17 @@ const remainingEl = document.getElementById("remaining");
 const counterEl  = document.getElementById("counter");
 const generateBtn = document.getElementById("generateBtn");
 const resetBtn   = document.getElementById("resetBtn");
+const qtyBtns    = document.querySelectorAll(".qty-btn");
+
+let selectedQty = 2;
+
+qtyBtns.forEach(btn => {
+  btn.addEventListener("click", () => {
+    qtyBtns.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedQty = parseInt(btn.dataset.qty);
+  });
+});
 
 function getWord(){
   let available = POOL.filter(i => !usedWordIndices.includes(i));
@@ -638,12 +680,17 @@ function getWord(){
   return WORDS[pick][0];
 }
 
+function updateRemaining(){
+  const left = WORDS.length - usedWordIndices.length;
+  remainingEl.textContent = left + " left before repeats";
+}
+
 generateBtn.addEventListener("click", () => {
   wordsGrid.innerHTML = "";
-  wordsGrid.className = "words-grid count-2";
+  wordsGrid.className = "words-grid count-" + selectedQty;
 
-  const labels = ["Team A", "Team B"];
-  const words  = [getWord(), getWord()];
+  const labels = ["Team A","Team B","Team C","Team D"].slice(0, selectedQty);
+  const words  = labels.map(() => getWord());
 
   words.forEach((w, i) => {
     const el = document.createElement("div");
@@ -653,11 +700,8 @@ generateBtn.addEventListener("click", () => {
     setTimeout(() => el.classList.add("show"), i * 100);
   });
 
-  const left = WORDS.length - usedWordIndices.length;
-  remainingEl.style.display = "block";
-  remainingEl.textContent = left + " words left before repeats";
-
-  drawnCount += 2;
+  updateRemaining();
+  drawnCount += selectedQty;
   counterEl.textContent = drawnCount + " words drawn this session";
 });
 
@@ -667,9 +711,12 @@ resetBtn.addEventListener("click", () => {
   drawnCount = 0;
   counterEl.textContent = "0 words drawn this session";
   wordsGrid.innerHTML = '<div class="placeholder">your words will appear here</div>';
-  wordsGrid.className = "words-grid count-2";
-  remainingEl.style.display = "none";
+  wordsGrid.className = "words-grid count-" + selectedQty;
+  updateRemaining();
 });
+
+// show count on load
+updateRemaining();
 
 // --- rulebook ---
 const rulebookBtn   = document.getElementById("rulebookBtn");
@@ -779,7 +826,7 @@ const teamsGrid      = document.getElementById("teamsGrid");
 const reshuffleBtn   = document.getElementById("reshuffleBtn");
 const modeBtns       = document.querySelectorAll(".team-mode-btn");
 
-let teamCount = 4, teamSize = 2;
+let teamCount = 2, teamSize = 4;
 
 modeBtns.forEach(btn => {
   btn.addEventListener("click", () => {
