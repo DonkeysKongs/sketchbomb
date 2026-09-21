@@ -154,16 +154,10 @@
   }
 
   .footer-row{
-    display:flex; justify-content: space-between; align-items:center;
-    width:100%; font-size: 0.82rem; color: rgba(245,241,230,0.4);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; width: 100%; font-size: 0.82rem; color: rgba(245,241,230,0.4);
+    text-align: center;
   }
-
-  .footer-row button{
-    background:none; border:none; color: rgba(245,241,230,0.55);
-    font-size: 0.82rem; text-decoration: underline; cursor:pointer; padding:0;
-  }
-
-  .footer-row button:hover{ color: var(--chalk); }
 
   /* qty selector */
   .qty-row{
@@ -533,8 +527,7 @@
 
   <div class="footer-row">
     <span id="counter">0 words drawn this session</span>
-    <span id="remaining" class="remaining-footer"></span>
-    <button id="resetBtn">reset used words</button>
+    <span id="remaining"></span>
   </div>
 </div>
 
@@ -736,7 +729,6 @@ const wordsGrid  = document.getElementById("wordsGrid");
 const remainingEl = document.getElementById("remaining");
 const counterEl  = document.getElementById("counter");
 const generateBtn = document.getElementById("generateBtn");
-const resetBtn   = document.getElementById("resetBtn");
 const qtyBtns    = document.querySelectorAll(".qty-btn");
 
 let selectedQty = 2;
@@ -817,16 +809,6 @@ generateBtn.addEventListener("click", () => {
   updateRemaining();
   drawnCount += selectedQty;
   counterEl.textContent = drawnCount + " words drawn this session";
-});
-
-resetBtn.addEventListener("click", () => {
-  usedWordIndices = [];
-  localStorage.removeItem(USED_KEY);
-  drawnCount = 0;
-  counterEl.textContent = "0 words drawn this session";
-  wordsGrid.innerHTML = '<div class="placeholder">your words will appear here</div>';
-  wordsGrid.className = "words-grid count-" + selectedQty;
-  updateRemaining();
 });
 
 // show count on load
