@@ -537,186 +537,129 @@
 // Weight 2 = solid mid-challenge drawables
 // Weight 1 = simpler or very visual, sprinkled in
 const WORDS = [
-
-  // ── WEIGHT 3: hard, abstract, sound-it-out ──────────────────────────────
-
-  // existing hard singles
-  ["Claustrophobia",3],["Arachnophobia",3],["Narcolepsy",3],["Bioluminescence",3],
-  ["Metamorphosis",3],["Hallucination",3],["Electrocution",3],["Decomposition",3],
-  ["Impersonation",3],["Reincarnation",3],["Photosynthesis",3],["Echolocation",3],
-  ["Fossilization",3],["Petrification",3],["Contamination",3],["Infestation",3],
-  ["Assassination",3],["Indoctrination",3],["Exorcism",3],["Ventriloquist",3],
-  ["Suffocation",3],["Hibernation",3],["Domestication",3],["Excommunication",3],
-  ["Fermentation",3],["Cannibalism",3],["Resurrection",3],["Levitation",3],
-  ["Teleportation",3],["Doppelganger",3],["Deterioration",3],["Cataclysm",3],
-  ["Phenomenon",3],["Sarcophagus",3],["Conquistador",3],["Catastrophe",3],
-  ["Hypochondria",3],["Autobiography",3],["Shapeshifting",3],["Decapitation",3],
-
-  // abstract concepts (drawable with effort)
-  ["Procrastination",3],["Serendipity",3],["Coincidence",3],["Hypocrisy",3],
-  ["Cognitive dissonance",3],["Stockholm syndrome",3],["Existential crisis",3],
-  ["Miscommunication",3],["Overthinking",3],["Paradox",3],
-
-  // "shouldn't be drawable" — great for sound-it-out
-  ["Awkward silence",3],["Secondhand embarrassment",3],["Jumping to conclusions",3],
-  ["Walking on eggshells",3],["Breaking the ice",3],["Thinking outside the box",3],
-  ["A slippery slope",3],["The elephant in the room",3],["A blessing in disguise",3],
-  ["A double-edged sword",3],["A guilty conscience",3],["A gut feeling",3],
-  ["Reading between the lines",3],["Missing the point",3],["A vicious cycle",3],
-  ["Losing your train of thought",3],["A change of heart",3],
-
-  // nearly-impossible objects
-  ["Rube Goldberg machine",3],["Circuit breaker",3],["Stud finder",3],
-  ["Carbon monoxide detector",3],["Surge protector",3],["Tire pressure gauge",3],
-  ["Paper shredder",3],["Smoke detector",3],["Barcode scanner",3],
-  ["QR code",3],["USB dongle",3],["HDMI adapter",3],
-
-  // obscure science (keep only the drawable-ish ones)
-  ["Circadian rhythm",3],["Placebo effect",3],["Doppler effect",3],
-  ["Radioactive decay",3],["Natural selection",3],["Genetic mutation",3],
-  ["Nuclear fission",3],["Osmosis",3],["Entropy",3],["Supernova",3],
-  ["Tectonic plate",3],["Singularity",3],["Black hole",3],["Mycelium",3],
-
-  // ── WEIGHT 2: solid drawables, recognisable scenes ───────────────────────
-
-  // existing mid-tier
-  ["Skydiving",2],["Hitchhiking",2],["Trespassing",2],["Eavesdropping",2],
-  ["Photobombing",2],["Bungee jumping",2],["Avalanche",2],["Blizzard",2],
-  ["Tsunami",2],["Wildfire",2],["Tornado",2],["Earthquake",2],["Pandemic",2],
-  ["Outbreak",2],["Blackout",2],["Riot",2],["Siege",2],["Jailbreak",2],
-  ["Manhunt",2],["Ambush",2],["Standoff",2],["Heist",2],["Stakeout",2],
-  ["Smuggling",2],["Disguise",2],["Hostage",2],["Ransom",2],["Alibi",2],
-  ["Getaway",2],["Hideout",2],["Minefield",2],["Bunker",2],["Airdrop",2],
-  ["Poltergeist",2],["Werewolf",2],["Possession",2],["Clairvoyance",2],
-  ["Telepathy",2],["Wanderlust",2],["Homesickness",2],["Insomnia",2],
-  ["Amnesia",2],["Paranoia",2],["Nostalgia",2],["Cosplay",2],["Doomscrolling",2],
-  ["Deepfake",2],["Cyborg",2],["Hologram",2],["Cryogenics",2],["Cloning",2],
-  ["Vigilante",2],["Bounty hunter",2],["Cult leader",2],["Con artist",2],
-  ["Informant",2],["Paparazzo",2],["Whistleblower",2],["Scapegoat",2],
-  ["Martyr",2],["Propaganda",2],["Censorship",2],["Time travel",2],
-  ["Virtual reality",2],["Ghost ship",2],["Ghost town",2],["Witch hunt",2],
-  ["Mass hysteria",2],["Underground railroad",2],["Witness protection",2],
-  ["Butterfly effect",2],["Domino effect",2],["Red herring",2],
-  ["Urban legend",2],["Scorched earth",2],["Chain reaction",2],
-  ["Conspiracy",2],["Superstition",2],["Pilgrimage",2],["Ritual",2],
-  ["Exile",2],["Refugee",2],["Blockade",2],["Checkpoint",2],["Coup",2],
-
-  // professions (from word bank)
-  ["Fortune teller",2],["Blacksmith",2],["Pickpocket",2],["Archaeologist",2],
-  ["Cartographer",2],["Puppeteer",2],["Beekeeper",2],["Falconer",2],
-  ["Taxidermist",2],["Glassblower",2],["Stuntman",2],["Jockey",2],
-  ["Grave digger",2],["Lighthouse keeper",2],["Auctioneer",2],["Night watchman",2],
-
-  // crime & spy scenes
-  ["Safecracker",2],["Jewel thief",2],["Counterfeiter",2],["Forged painting",2],
-  ["Police lineup",2],["Interrogation room",2],["Escape tunnel",2],
-  ["Getaway driver",2],["Wanted poster",2],["Skeleton key",2],["Vault",2],
-  ["Crime scene",2],["Bloodhound",2],["Security camera",2],["Tripwire",2],
-
-  // sea & mythology
-  ["Shipwreck",2],["Castaway",2],["Treasure island",2],["Desert island",2],
-  ["Message in a bottle",2],["Crow's nest",2],["Kraken",2],["Siren",2],
-  ["Minotaur",2],["Centaur",2],["Griffin",2],["Cyclops",2],["Gargoyle",2],
-  ["Basilisk",2],["Phoenix",2],["Alchemist",2],["Sorcerer",2],
-
-  // medieval / castle
-  ["Castle siege",2],["Medieval banquet",2],["Catapult",2],["Trebuchet",2],
-  ["Battering ram",2],["Dungeon",2],["Torture chamber",2],["Coat of arms",2],
-
-  // sci-fi & space
-  ["Rocket launch",2],["Space station",2],["Moon rover",2],["Asteroid belt",2],
-  ["Lunar crater",2],["Cryogenic chamber",2],["Laser beam",2],["Force field",2],
-  ["Robot dog",2],["Mad scientist",2],["Lab coat",2],["DNA strand",2],
-  ["Dinosaur skeleton",2],["Fossil",2],
-
-  // events & social scenes
-  ["Escape room",2],["Scavenger hunt",2],["Treasure hunt",2],["Magic trick",2],
-  ["Sword swallowing",2],["Fire juggling",2],["Haunted house",2],
-  ["Hall of mirrors",2],["Funhouse mirror",2],["Masquerade",2],
-  ["Parade float",2],["Coronation",2],["Award ceremony",2],
-
-  // weird/tricky objects
-  ["House of cards",2],["Domino chain",2],
-  ["Time bomb",2],["Trapdoor",2],["Secret passage",2],["Hidden compartment",2],
-  ["False bottom",2],["Drawbridge",2],["Spyglass",2],
-
-  // animals
-  ["Platypus",2],["Armadillo",2],["Pangolin",2],["Axolotl",2],["Capybara",2],
-  ["Narwhal",2],["Anglerfish",2],["Pufferfish",2],["Mantis shrimp",2],
-  ["Horseshoe crab",2],["Praying mantis",2],["Stick insect",2],["Venus flytrap",2],
-
-  // nature
-  ["Sinkhole",2],["Geyser",2],["Glacier",2],["Iceberg",2],["Tide pool",2],
-  ["Whirlpool",2],["Oasis",2],["Coral reef",2],["Bamboo forest",2],
-
-  // food & kitchen
-  ["Chocolate fountain",2],["Gingerbread house",2],["Sushi conveyor",2],
-  ["Food truck",2],["Farmers market",2],["Pizza oven",2],["Fondue",2],
-  ["Mortar and pestle",2],["Meat grinder",2],
-
-  // broken/chaos scenes
-  ["Flooded basement",2],["Broken elevator",2],["Traffic jam",2],
-  ["Car accident",2],["Railroad crossing",2],["Hot-air balloon",2],
-  ["Hang glider",2],["Cable car",2],["Drive-in theater",2],
-
-  // clothing & disguise
-  ["Suit of armor",2],["Trench coat",2],["Hazmat suit",2],["Diving suit",2],
-  ["Firefighter gear",2],["Astronaut suit",2],["False mustache",2],
-  ["Disguise kit",2],["Feather boa",2],
-
-  // ── WEIGHT 1: simpler, very visual, sprinkled in ─────────────────────────
-
-  ["Eclipse",1],["Mirage",1],["Quicksand",1],["Stampede",1],["Explosion",1],
-  ["Sabotage",1],["Famine",1],["Drought",1],["Flood",1],["Pirate",1],
-  ["Vampire",1],["Zombie",1],["Mummy",1],["Fugitive",1],["Spy",1],
-  ["Deja vu",1],["Sixth sense",1],["Plot twist",1],["Cold turkey",1],
-  ["Flash mob",1],["Blind date",1],["Writer's block",1],["Jet lag",1],
-  ["Cabin fever",1],["Burnout",1],["Heartbreak",1],["Sleepwalking",1],
-  ["Camouflage",1],["Quarantine",1],["Evacuation",1],
-
-  // simple professions
-  ["Magician",1],["Locksmith",1],["Zookeeper",1],["Park ranger",1],
-  ["Tour guide",1],["Referee",1],["Lifeguard",1],["Tattoo artist",1],
-  ["Street artist",1],["Plumber",1],["Baker",1],["Butcher",1],["Chef",1],
-  ["Sommelier",1],["Jester",1],["Potter",1],["Bard",1],["Knight",1],
-  ["Astronaut",1],["Navigator",1],["Sailor",1],
-
-  // toys & games
-  ["Jack-in-the-box",1],["Yo-yo",1],["Spinning top",1],["Hula hoop",1],
-  ["Stilts",1],["Unicycle",1],["Snow globe",1],["Kite",1],["Puppet",1],
-  ["Rubik's Cube",1],["Chessboard",1],["Dartboard",1],["Pinball machine",1],
-  ["Claw machine",1],["Jump rope",1],
-
-  // simple instruments
-  ["Accordion",1],["Bagpipes",1],["Harmonica",1],["Tuba",1],["Banjo",1],
-  ["Harp",1],["Cello",1],["Metronome",1],["Music box",1],["Megaphone",1],
-
-  // simple nature/food
-  ["Waterfall",1],["Canyon",1],["Sand dune",1],["Hot spring",1],
-  ["Sunflower field",1],["Mushroom ring",1],["Bonsai",1],["Pitcher plant",1],
-  ["Cornucopia",1],["Dragon fruit",1],["Pomegranate",1],["Artichoke",1],
-  ["Cotton candy",1],["Caramel apple",1],["Pretzel",1],["Croissant",1],
-
-  // simple events
-  ["Bonfire",1],["Campout",1],["Talent show",1],["Science fair",1],
-  ["Prom",1],["Carnival",1],["Ferris wheel",1],["Carousel",1],
-  ["Roller coaster",1],["Bumper cars",1],["Dunk tank",1],["Ring toss",1],
-
-  // simple objects
-  ["Hourglass",1],["Sundial",1],["Kaleidoscope",1],
-  ["Grandfather clock",1],["Cuckoo clock",1],["Lava lamp",1],["Hammock",1],
-  ["Rocking chair",1],["Treehouse",1],["Lighthouse",1],["Windmill",1],
-  ["Greenhouse",1],["Watchtower",1],["Observatory",1],
+  // weight 3 — hard, abstract, sound-it-out
+  "Claustrophobia","Arachnophobia","Narcolepsy","Bioluminescence",
+  "Metamorphosis","Hallucination","Electrocution","Decomposition",
+  "Impersonation","Reincarnation","Photosynthesis","Echolocation",
+  "Fossilization","Petrification","Contamination","Infestation",
+  "Assassination","Indoctrination","Exorcism","Ventriloquist",
+  "Suffocation","Hibernation","Domestication","Excommunication",
+  "Fermentation","Cannibalism","Resurrection","Levitation",
+  "Teleportation","Doppelganger","Deterioration","Cataclysm",
+  "Phenomenon","Sarcophagus","Conquistador","Catastrophe",
+  "Hypochondria","Autobiography","Shapeshifting","Decapitation",
+  "Procrastination","Serendipity","Coincidence","Hypocrisy",
+  "Cognitive dissonance","Stockholm syndrome","Existential crisis",
+  "Miscommunication","Overthinking","Paradox",
+  "Awkward silence","Secondhand embarrassment","Jumping to conclusions",
+  "Walking on eggshells","Breaking the ice","Thinking outside the box",
+  "A slippery slope","The elephant in the room","A blessing in disguise",
+  "A double-edged sword","A guilty conscience","A gut feeling",
+  "Reading between the lines","Missing the point","A vicious cycle",
+  "Losing your train of thought","A change of heart",
+  "Rube Goldberg machine","Circuit breaker","Stud finder",
+  "Carbon monoxide detector","Surge protector","Tire pressure gauge",
+  "Paper shredder","Smoke detector","Barcode scanner",
+  "QR code","USB dongle","HDMI adapter",
+  "Circadian rhythm","Placebo effect","Doppler effect",
+  "Radioactive decay","Natural selection","Genetic mutation",
+  "Nuclear fission","Osmosis","Entropy","Supernova",
+  "Tectonic plate","Singularity","Black hole","Mycelium",
+  // weight 2 — solid drawables
+  "Skydiving","Hitchhiking","Trespassing","Eavesdropping",
+  "Photobombing","Bungee jumping","Avalanche","Blizzard",
+  "Tsunami","Wildfire","Tornado","Earthquake","Pandemic",
+  "Outbreak","Blackout","Riot","Siege","Jailbreak",
+  "Manhunt","Ambush","Standoff","Heist","Stakeout",
+  "Smuggling","Disguise","Hostage","Ransom","Alibi",
+  "Getaway","Hideout","Minefield","Bunker","Airdrop",
+  "Poltergeist","Werewolf","Possession","Clairvoyance",
+  "Telepathy","Wanderlust","Homesickness","Insomnia",
+  "Amnesia","Paranoia","Nostalgia","Cosplay","Doomscrolling",
+  "Deepfake","Cyborg","Hologram","Cryogenics","Cloning",
+  "Vigilante","Bounty hunter","Cult leader","Con artist",
+  "Informant","Paparazzo","Whistleblower","Scapegoat",
+  "Martyr","Propaganda","Censorship","Time travel",
+  "Virtual reality","Ghost ship","Ghost town","Witch hunt",
+  "Mass hysteria","Underground railroad","Witness protection",
+  "Butterfly effect","Domino effect","Red herring",
+  "Urban legend","Scorched earth","Chain reaction",
+  "Conspiracy","Superstition","Pilgrimage","Ritual",
+  "Exile","Refugee","Blockade","Checkpoint","Coup",
+  "Fortune teller","Blacksmith","Pickpocket","Archaeologist",
+  "Cartographer","Puppeteer","Beekeeper","Falconer",
+  "Taxidermist","Glassblower","Stuntman","Jockey",
+  "Grave digger","Lighthouse keeper","Auctioneer","Night watchman",
+  "Safecracker","Jewel thief","Counterfeiter","Forged painting",
+  "Police lineup","Interrogation room","Escape tunnel",
+  "Getaway driver","Wanted poster","Skeleton key","Vault",
+  "Crime scene","Bloodhound","Security camera","Tripwire",
+  "Shipwreck","Castaway","Treasure island","Desert island",
+  "Message in a bottle","Crow nest","Kraken","Siren",
+  "Minotaur","Centaur","Griffin","Cyclops","Gargoyle",
+  "Basilisk","Phoenix","Alchemist","Sorcerer",
+  "Castle siege","Medieval banquet","Catapult","Trebuchet",
+  "Battering ram","Dungeon","Torture chamber","Coat of arms",
+  "Rocket launch","Space station","Moon rover","Asteroid belt",
+  "Lunar crater","Cryogenic chamber","Laser beam","Force field",
+  "Robot dog","Mad scientist","Lab coat","DNA strand",
+  "Dinosaur skeleton","Fossil",
+  "Escape room","Scavenger hunt","Treasure hunt","Magic trick",
+  "Sword swallowing","Fire juggling","Haunted house",
+  "Hall of mirrors","Funhouse mirror","Masquerade",
+  "Parade float","Coronation","Award ceremony",
+  "House of cards","Domino chain",
+  "Time bomb","Trapdoor","Secret passage","Hidden compartment",
+  "False bottom","Drawbridge","Spyglass",
+  "Platypus","Armadillo","Pangolin","Axolotl","Capybara",
+  "Narwhal","Anglerfish","Pufferfish","Mantis shrimp",
+  "Horseshoe crab","Praying mantis","Stick insect","Venus flytrap",
+  "Sinkhole","Geyser","Glacier","Iceberg","Tide pool",
+  "Whirlpool","Oasis","Coral reef","Bamboo forest",
+  "Chocolate fountain","Gingerbread house","Sushi conveyor",
+  "Food truck","Farmers market","Pizza oven","Fondue",
+  "Mortar and pestle","Meat grinder",
+  "Flooded basement","Broken elevator","Traffic jam",
+  "Car accident","Railroad crossing","Hot-air balloon",
+  "Hang glider","Cable car","Drive-in theater",
+  "Suit of armor","Trench coat","Hazmat suit","Diving suit",
+  "Firefighter gear","Astronaut suit","False mustache",
+  "Disguise kit","Feather boa",
+  // weight 1 — simpler
+  "Eclipse","Mirage","Quicksand","Stampede","Explosion",
+  "Sabotage","Famine","Drought","Flood","Pirate",
+  "Vampire","Zombie","Mummy","Fugitive","Spy",
+  "Deja vu","Sixth sense","Plot twist","Cold turkey",
+  "Flash mob","Blind date","Writers block","Jet lag",
+  "Cabin fever","Burnout","Heartbreak","Sleepwalking",
+  "Camouflage","Quarantine","Evacuation",
+  "Magician","Locksmith","Zookeeper","Park ranger",
+  "Tour guide","Referee","Lifeguard","Tattoo artist",
+  "Street artist","Plumber","Baker","Butcher","Chef",
+  "Sommelier","Jester","Potter","Bard","Knight",
+  "Astronaut","Navigator","Sailor",
+  "Jack-in-the-box","Yo-yo","Spinning top","Hula hoop",
+  "Stilts","Unicycle","Snow globe","Kite","Puppet",
+  "Rubiks Cube","Chessboard","Dartboard","Pinball machine",
+  "Claw machine","Jump rope",
+  "Accordion","Bagpipes","Harmonica","Tuba","Banjo",
+  "Harp","Cello","Metronome","Music box","Megaphone",
+  "Waterfall","Canyon","Sand dune","Hot spring",
+  "Sunflower field","Mushroom ring","Bonsai","Pitcher plant",
+  "Cornucopia","Dragon fruit","Pomegranate","Artichoke",
+  "Cotton candy","Caramel apple","Pretzel","Croissant",
+  "Bonfire","Campout","Talent show","Science fair",
+  "Prom","Carnival","Ferris wheel","Carousel",
+  "Roller coaster","Bumper cars","Dunk tank","Ring toss",
+  "Hourglass","Sundial","Kaleidoscope",
+  "Grandfather clock","Cuckoo clock","Lava lamp","Hammock",
+  "Rocking chair","Treehouse","Lighthouse","Windmill",
+  "Greenhouse","Watchtower","Observatory",
 ];
 
 
-// Build weighted pool: each word's index appears [weight] times
-function buildPool(){
-  const pool = [];
-  WORDS.forEach(([,w], i) => { for(let x = 0; x < w; x++) pool.push(i); });
-  return pool;
-}
-const POOL = buildPool();
+// Flat pool: every word has equal chance
+const POOL = WORDS.map((_, i) => i);
 
 const USED_KEY = "sketchbomb_used";
 let usedWordIndices = (() => {
@@ -765,7 +708,7 @@ function getWord(){
   const pick = available[Math.floor(Math.random() * available.length)];
   if(!usedWordIndices.includes(pick)) usedWordIndices.push(pick);
   localStorage.setItem(USED_KEY, JSON.stringify(usedWordIndices));
-  return { word: WORDS[pick][0], idx: pick };
+  return { word: WORDS[pick], idx: pick };
 }
 
 function attachReroll(el, teamLabel){
@@ -978,7 +921,7 @@ function renderHistory(){
   wordList.innerHTML = "";
   if(activeTab === "used"){
     historyClearBtn.textContent = "clear used words";
-    const used = usedWordIndices.map(i => WORDS[i][0]);
+    const used = usedWordIndices.map(i => WORDS[i]);
     if(used.length === 0){
       wordList.innerHTML = '<div class="word-list-empty">No words used yet</div>';
     } else {
@@ -991,7 +934,7 @@ function renderHistory(){
     }
   } else {
     historyClearBtn.textContent = "unban all words";
-    const banned = bannedIndices.map(i => WORDS[i][0]);
+    const banned = bannedIndices.map(i => WORDS[i]);
     if(banned.length === 0){
       wordList.innerHTML = '<div class="word-list-empty">No banned words</div>';
     } else {
