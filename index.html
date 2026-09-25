@@ -53,7 +53,7 @@
     color: rgba(245,241,230,0.6); letter-spacing: 0.02em;
   }
 
-  /* bank toggle — sits right next to the team-count selector */
+  /* bank toggle */
   .bank-row{
     display:flex; gap:8px; width:100%; max-width: 360px;
   }
@@ -65,9 +65,7 @@
     transition: all 0.15s;
   }
   .bank-btn:hover{ border-color: rgba(245,241,230,0.4); color: var(--chalk); }
-  .bank-btn.active{
-    background: var(--red); border-color: var(--red); color:#fff;
-  }
+  .bank-btn.active{ background: var(--red); border-color: var(--red); color:#fff; }
 
   /* card */
   .card{
@@ -93,10 +91,9 @@
     font-family: Georgia, 'Times New Roman', serif;
     font-weight: 700; text-align:center; line-height: 1.2;
     opacity: 0; transform: translateY(6px) scale(0.98);
-    width: 100%;
+    width: 100%; position: relative;
   }
 
-  /* font sizes scale with word count */
   .count-1 .word-item { font-size: clamp(1.9rem, 7vw, 2.8rem); }
   .count-2 .word-item { font-size: clamp(1.5rem, 5vw, 2.1rem); }
   .count-3 .word-item { font-size: clamp(1.25rem, 4vw, 1.7rem); }
@@ -106,10 +103,6 @@
     font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
     text-transform: uppercase; color: rgba(245,241,230,0.38);
     margin-bottom: 2px;
-  }
-
-  .word-item{
-    position: relative;
   }
 
   .reroll-btn{
@@ -122,12 +115,9 @@
     font-size: 0.75rem; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
-    line-height: 1; padding: 0;
-    flex-shrink: 0;
+    line-height: 1; padding: 0; flex-shrink: 0;
   }
-  .reroll-btn:hover{
-    background: var(--red); border-color: var(--red); color: #fff;
-  }
+  .reroll-btn:hover{ background: var(--red); border-color: var(--red); color: #fff; }
 
   .word-item:not(:last-child){
     padding-bottom: 10px;
@@ -146,15 +136,6 @@
     color: rgba(245,241,230,0.32); font-size: 1rem; text-align:center;
   }
 
-  .remaining{
-    font-size: 0.75rem; color: rgba(245,241,230,0.35);
-    letter-spacing: 0.04em; display:none;
-  }
-
-  .remaining-footer{
-    font-size: 0.82rem; color: rgba(245,241,230,0.4);
-  }
-
   .generate-btn{
     width:100%; padding: 18px; border-radius: 16px; border: none;
     background: var(--chalk); color: var(--ink);
@@ -163,11 +144,7 @@
     transition: transform 0.12s ease, box-shadow 0.12s ease;
     box-shadow: 0 6px 0 rgba(0,0,0,0.28);
   }
-
-  .generate-btn:active{
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.28);
-  }
+  .generate-btn:active{ transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.28); }
 
   .footer-row{
     display: flex; flex-direction: column; align-items: center;
@@ -175,7 +152,6 @@
     text-align: center;
   }
 
-  /* qty selector */
   .qty-row{
     display: flex; align-items: center; gap: 12px;
     font-size: 0.9rem; color: rgba(245,241,230,0.6);
@@ -191,57 +167,87 @@
   .qty-btn:hover{ border-color: rgba(245,241,230,0.4); color: var(--chalk); }
   .qty-btn.active{ background: var(--red); border-color: var(--red); color: #fff; }
 
-  /* fixed corner buttons */
-  .corner-btn{
-    position: fixed; top: 16px;
+  /* ── HAMBURGER ── */
+  .hamburger-btn{
+    position: fixed; top: 16px; right: 16px;
     width: 44px; height: 44px; border-radius: 50%;
     background: var(--ink-2);
     border: 1.5px solid rgba(245,241,230,0.2);
     color: var(--chalk); cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    line-height: 1; font-size: 1.1rem; padding: 0;
-    transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-    z-index: 100;
+    font-size: 1.15rem; line-height: 1; padding: 0;
+    z-index: 300;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: background 0.15s, border-color 0.15s;
   }
-  .corner-btn:hover{
-    transform: scale(1.08);
-    border-color: rgba(245,241,230,0.5);
-    background: #303868;
-  }
-  .rulebook-btn{ right: 16px; }
-  .score-btn{ right: 68px; }
-  .teams-btn{ right: 120px; }
-  .history-btn{ right: 172px; }
+  .hamburger-btn:hover{ background: #303868; border-color: rgba(245,241,230,0.5); }
 
-  /* overlay */
+  /* ── TRAY ── */
+  .tray-overlay{
+    position: fixed; inset: 0;
+    background: rgba(10,12,28,0.6);
+    backdrop-filter: blur(3px);
+    z-index: 250;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .tray-overlay.open{ opacity: 1; pointer-events: all; }
+
+  .tray{
+    position: fixed; top: 0; right: 0;
+    width: 240px; height: 100%;
+    background: var(--ink-2);
+    border-left: 1px solid rgba(245,241,230,0.1);
+    padding: 70px 0 24px;
+    display: flex; flex-direction: column; gap: 4px;
+    transform: translateX(100%);
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    z-index: 260;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.4);
+  }
+  .tray-overlay.open .tray{ transform: translateX(0); }
+
+  .tray-item{
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 24px;
+    background: none; border: none; color: var(--chalk);
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    text-align: left; width: 100%;
+    transition: background 0.12s;
+    border-radius: 0;
+  }
+  .tray-item:hover{ background: rgba(255,255,255,0.06); }
+  .tray-item .tray-icon{ font-size: 1.2rem; width: 28px; text-align: center; }
+  .tray-label{ font-size: 0.95rem; }
+
+  .tray-divider{
+    height: 1px; background: rgba(245,241,230,0.08);
+    margin: 8px 24px;
+  }
+
+  /* ── MODALS (shared) ── */
   .modal-overlay{
     position: fixed; inset: 0;
     background: rgba(10,12,28,0.75);
     backdrop-filter: blur(4px);
-    z-index: 200;
+    z-index: 400;
     display: flex; align-items: center; justify-content: center;
     padding: 24px 16px;
     opacity: 0; pointer-events: none;
     transition: opacity 0.2s ease;
   }
-  .modal-overlay.open{
-    opacity: 1; pointer-events: all;
-  }
+  .modal-overlay.open{ opacity: 1; pointer-events: all; }
 
-  /* modal box */
   .modal{
     width: 100%; max-width: 500px;
     background: var(--ink-2);
     border: 1px solid rgba(245,241,230,0.15);
-    border-radius: 20px;
-    overflow: hidden;
+    border-radius: 20px; overflow: hidden;
     transform: translateY(12px) scale(0.98);
     transition: transform 0.2s ease;
+    max-height: 90vh; overflow-y: auto;
   }
-  .modal-overlay.open .modal{
-    transform: translateY(0) scale(1);
-  }
+  .modal-overlay.open .modal{ transform: translateY(0) scale(1); }
 
   .modal-header{
     display: flex; align-items: center; justify-content: space-between;
@@ -252,9 +258,7 @@
     font-family: Georgia, serif; font-style: italic;
     font-size: 1.2rem; margin: 0; font-weight: 700;
   }
-  .modal-header-right{
-    display: flex; align-items: center; gap: 10px;
-  }
+  .modal-header-right{ display: flex; align-items: center; gap: 10px; }
 
   .lock-btn{
     background: none; border: 1.5px solid rgba(245,241,230,0.25);
@@ -279,52 +283,29 @@
     width: 100%; min-height: 260px;
     background: rgba(0,0,0,0.2);
     border: 1.5px solid rgba(245,241,230,0.12);
-    border-radius: 12px;
-    color: var(--chalk);
+    border-radius: 12px; color: var(--chalk);
     font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 0.95rem; line-height: 1.6;
-    padding: 14px 16px; resize: vertical;
-    outline: none;
+    padding: 14px 16px; resize: vertical; outline: none;
     transition: border-color 0.15s;
   }
   .rules-textarea:focus{ border-color: rgba(245,241,230,0.35); }
-  .rules-textarea:disabled{
-    opacity: 0.85; cursor: default; resize: none;
-    border-color: rgba(245,241,230,0.07);
-  }
-
-  .modal-hint{
-    margin-top: 10px; font-size: 0.75rem;
-    color: rgba(245,241,230,0.35); text-align: right;
-  }
+  .rules-textarea:disabled{ opacity: 0.85; cursor: default; resize: none; border-color: rgba(245,241,230,0.07); }
+  .modal-hint{ margin-top: 10px; font-size: 0.75rem; color: rgba(245,241,230,0.35); text-align: right; }
 
   /* scoreboard */
-  .score-list{
-    display: flex; flex-direction: column; gap: 8px;
-    padding: 16px 20px 20px;
-  }
+  .score-list{ display: flex; flex-direction: column; gap: 8px; padding: 16px 20px 20px; }
   .score-row{
     display: flex; align-items: center; gap: 12px;
-    background: rgba(0,0,0,0.18); border-radius: 12px;
-    padding: 10px 14px;
+    background: rgba(0,0,0,0.18); border-radius: 12px; padding: 10px 14px;
   }
-  .score-rank{
-    font-size: 0.8rem; font-weight: 700; color: rgba(245,241,230,0.35);
-    width: 20px; text-align: center; flex-shrink: 0;
-  }
-  .score-rank.gold   { color: #f5c842; }
-  .score-rank.silver { color: #b0b8c8; }
-  .score-rank.bronze { color: #cd7f4a; }
-  .score-name{
-    flex: 1; font-weight: 600; font-size: 0.97rem; text-transform: capitalize;
-  }
-  .score-controls{
-    display: flex; align-items: center; gap: 6px;
-  }
-  .score-val{
-    font-family: Georgia, serif; font-weight: 700;
-    font-size: 1.1rem; min-width: 28px; text-align: center;
-  }
+  .score-rank{ font-size: 0.8rem; font-weight: 700; color: rgba(245,241,230,0.35); width: 20px; text-align: center; flex-shrink: 0; }
+  .score-rank.gold{ color: #f5c842; }
+  .score-rank.silver{ color: #b0b8c8; }
+  .score-rank.bronze{ color: #cd7f4a; }
+  .score-name{ flex: 1; font-weight: 600; font-size: 0.97rem; text-transform: capitalize; }
+  .score-controls{ display: flex; align-items: center; gap: 6px; }
+  .score-val{ font-family: Georgia, serif; font-weight: 700; font-size: 1.1rem; min-width: 28px; text-align: center; }
   .score-inc, .score-dec{
     width: 30px; height: 30px; border-radius: 8px; border: none;
     font-size: 1rem; font-weight: 700; cursor: pointer;
@@ -336,57 +317,25 @@
   .score-dec{ background: rgba(245,241,230,0.1); color: rgba(245,241,230,0.6); }
   .score-dec:active{ transform: scale(0.92); }
   .score-dec:disabled{ opacity: 0.3; cursor: default; }
-
-  .score-footer{
-    padding: 0 20px 16px;
-    display: flex; justify-content: flex-end;
-  }
-  .score-reset-btn{
-    background: none; border: none; color: rgba(245,241,230,0.4);
-    font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0;
-  }
+  .score-footer{ padding: 0 20px 16px; display: flex; justify-content: flex-end; }
+  .score-reset-btn{ background: none; border: none; color: rgba(245,241,230,0.4); font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0; }
   .score-reset-btn:hover{ color: var(--chalk); }
 
   /* team randomizer */
-  .team-mode-toggle{
-    display: flex; gap: 8px; padding: 16px 20px 0;
-  }
+  .team-mode-toggle{ display: flex; gap: 8px; padding: 16px 20px 0; }
   .team-mode-btn{
     flex: 1; padding: 9px 6px; border-radius: 10px;
     border: 1.5px solid rgba(245,241,230,0.15);
     background: transparent; color: rgba(245,241,230,0.55);
-    font-size: 0.85rem; font-weight: 600; cursor: pointer;
-    transition: all 0.15s;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
   }
-  .team-mode-btn.active{
-    background: var(--red); border-color: var(--red); color: #fff;
-  }
-
-  .teams-grid{
-    display: flex; flex-direction: column; gap: 10px;
-    padding: 14px 20px 6px;
-  }
-  .team-card{
-    background: rgba(0,0,0,0.2); border-radius: 12px;
-    padding: 12px 16px;
-    opacity: 0; transform: translateY(6px);
-  }
-  .team-card.show{
-    animation: pop 0.35s cubic-bezier(.2,.9,.3,1.3) forwards;
-  }
-  .team-label{
-    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-    text-transform: uppercase; color: var(--red); margin-bottom: 6px;
-  }
-  .team-members{
-    font-size: 1rem; font-weight: 600; color: var(--chalk);
-    line-height: 1.5;
-  }
-
-  .teams-actions{
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 12px 20px 18px;
-  }
+  .team-mode-btn.active{ background: var(--red); border-color: var(--red); color: #fff; }
+  .teams-grid{ display: flex; flex-direction: column; gap: 10px; padding: 14px 20px 6px; }
+  .team-card{ background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px 16px; opacity: 0; transform: translateY(6px); }
+  .team-card.show{ animation: pop 0.35s cubic-bezier(.2,.9,.3,1.3) forwards; }
+  .team-label{ font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--red); margin-bottom: 6px; }
+  .team-members{ font-size: 1rem; font-weight: 600; color: var(--chalk); line-height: 1.5; }
+  .teams-actions{ display: flex; justify-content: space-between; align-items: center; padding: 12px 20px 18px; }
   .reshuffle-btn{
     padding: 10px 20px; border-radius: 10px; border: none;
     background: var(--chalk); color: var(--ink);
@@ -395,14 +344,10 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.25);
   }
   .reshuffle-btn:active{ transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.25); }
-  .teams-placeholder{
-    color: rgba(245,241,230,0.3); font-size: 0.9rem; text-align: center;
-    padding: 20px; width: 100%;
-  }
-  /* history modal */
-  .tab-row{
-    display: flex; border-bottom: 1px solid var(--line);
-  }
+  .teams-placeholder{ color: rgba(245,241,230,0.3); font-size: 0.9rem; text-align: center; padding: 20px; width: 100%; }
+
+  /* history */
+  .tab-row{ display: flex; border-bottom: 1px solid var(--line); }
   .tab-btn{
     flex: 1; padding: 12px; background: none; border: none;
     color: rgba(245,241,230,0.45); font-size: 0.9rem; font-weight: 600;
@@ -410,16 +355,10 @@
     margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
   }
   .tab-btn.active{ color: var(--chalk); border-bottom-color: var(--red); }
-
-  .word-list{
-    max-height: 340px; overflow-y: auto;
-    padding: 12px 20px 16px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
+  .word-list{ max-height: 340px; overflow-y: auto; padding: 12px 20px 16px; display: flex; flex-direction: column; gap: 4px; }
   .word-list-item{
     display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 10px; border-radius: 8px;
-    font-size: 0.92rem; background: rgba(0,0,0,0.15);
+    padding: 7px 10px; border-radius: 8px; font-size: 0.92rem; background: rgba(0,0,0,0.15);
   }
   .word-list-item.banned{ color: rgba(245,241,230,0.45); text-decoration: line-through; }
   .unban-btn{
@@ -429,33 +368,109 @@
     transition: all 0.15s; flex-shrink: 0; margin-left: 8px;
   }
   .unban-btn:hover{ background: var(--red); border-color: var(--red); color: #fff; }
-  .word-list-empty{
-    color: rgba(245,241,230,0.3); font-size: 0.9rem;
-    text-align: center; padding: 24px 0;
-  }
-  .history-footer{
-    padding: 0 20px 16px; display: flex; justify-content: flex-end;
-  }
-  .history-clear-btn{
-    background: none; border: none; color: rgba(245,241,230,0.4);
-    font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0;
-  }
+  .word-list-empty{ color: rgba(245,241,230,0.3); font-size: 0.9rem; text-align: center; padding: 24px 0; }
+  .history-footer{ padding: 0 20px 16px; display: flex; justify-content: flex-end; }
+  .history-clear-btn{ background: none; border: none; color: rgba(245,241,230,0.4); font-size: 0.8rem; text-decoration: underline; cursor: pointer; padding: 0; }
   .history-clear-btn:hover{ color: var(--chalk); }
+
+  /* ── WHEEL ── */
+  .wheel-body{ padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  .wheel-input-row{ display: flex; gap: 8px; }
+  .wheel-input{
+    flex: 1; background: rgba(0,0,0,0.2);
+    border: 1.5px solid rgba(245,241,230,0.15);
+    border-radius: 10px; color: var(--chalk);
+    font-size: 0.95rem; padding: 10px 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .wheel-input:focus{ border-color: rgba(245,241,230,0.4); }
+  .wheel-input::placeholder{ color: rgba(245,241,230,0.3); }
+  .wheel-add-btn{
+    padding: 10px 16px; border-radius: 10px; border: none;
+    background: var(--red); color: #fff;
+    font-size: 0.9rem; font-weight: 700; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .wheel-add-btn:hover{ opacity: 0.85; }
+
+  .wheel-chips{
+    display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px;
+  }
+  .wheel-chip{
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(245,241,230,0.15);
+    border-radius: 999px; padding: 5px 10px 5px 12px;
+    font-size: 0.82rem; font-weight: 600;
+  }
+  .chip-remove{
+    background: none; border: none; color: rgba(245,241,230,0.4);
+    cursor: pointer; font-size: 0.8rem; padding: 0; line-height: 1;
+  }
+  .chip-remove:hover{ color: var(--red); }
+
+  .wheel-canvas-wrap{
+    display: flex; justify-content: center; position: relative;
+  }
+  #wheelCanvas{ border-radius: 50%; display: block; max-width: 100%; }
+
+  .wheel-spin-btn{
+    width: 100%; padding: 14px; border-radius: 14px; border: none;
+    background: var(--chalk); color: var(--ink);
+    font-size: 1rem; font-weight: 700; cursor: pointer;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 5px 0 rgba(0,0,0,0.25);
+  }
+  .wheel-spin-btn:active{ transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,0.25); }
+  .wheel-spin-btn:disabled{ opacity: 0.5; cursor: default; }
+
+  .wheel-result{
+    text-align: center; font-family: Georgia, serif;
+    font-size: 1.3rem; font-weight: 700; min-height: 2rem;
+    color: var(--chalk);
+  }
+  .wheel-clear-btn{
+    background: none; border: none; color: rgba(245,241,230,0.35);
+    font-size: 0.78rem; text-decoration: underline; cursor: pointer;
+    align-self: flex-end; padding: 0;
+  }
+  .wheel-clear-btn:hover{ color: var(--chalk); }
 </style>
 </head>
 <body>
-<!-- corner buttons -->
-<button class="corner-btn history-btn" id="historyBtn" title="Word History">📋</button>
-<button class="corner-btn teams-btn" id="teamsBtn" title="Team Randomizer">🎲</button>
-<button class="corner-btn score-btn" id="scoreBoardBtn" title="Scoreboard">🏆</button>
-<button class="corner-btn rulebook-btn" id="rulebookBtn" title="Rulebook">📖</button>
+
+<!-- hamburger -->
+<button class="hamburger-btn" id="hamburgerBtn" title="Menu">☰</button>
+
+<!-- tray -->
+<div class="tray-overlay" id="trayOverlay">
+  <div class="tray">
+    <button class="tray-item" data-modal="historyOverlay">
+      <span class="tray-icon">📋</span><span class="tray-label">Word History</span>
+    </button>
+    <button class="tray-item" data-modal="teamsOverlay">
+      <span class="tray-icon">🎲</span><span class="tray-label">Team Randomizer</span>
+    </button>
+    <button class="tray-item" data-modal="scoreOverlay">
+      <span class="tray-icon">🏆</span><span class="tray-label">Scoreboard</span>
+    </button>
+    <button class="tray-item" data-modal="wheelOverlay">
+      <span class="tray-icon">🎡</span><span class="tray-label">Wheel of Fortune</span>
+    </button>
+    <div class="tray-divider"></div>
+    <button class="tray-item" data-modal="modalOverlay">
+      <span class="tray-icon">📖</span><span class="tray-label">Rulebook</span>
+    </button>
+  </div>
+</div>
 
 <!-- history modal -->
 <div class="modal-overlay" id="historyOverlay">
   <div class="modal">
     <div class="modal-header">
       <h2>📋 Word History</h2>
-      <button class="close-btn" id="historyCloseBtn">✕</button>
+      <button class="close-btn" data-close="historyOverlay">✕</button>
     </div>
     <div class="tab-row">
       <button class="tab-btn active" id="tabUsed">Used</button>
@@ -473,12 +488,12 @@
   <div class="modal">
     <div class="modal-header">
       <h2>🎲 Team Randomizer</h2>
-      <button class="close-btn" id="teamsCloseBtn">✕</button>
+      <button class="close-btn" data-close="teamsOverlay">✕</button>
     </div>
     <div class="team-mode-toggle">
-      <button class="team-mode-btn active" id="mode24" data-teams="2" data-size="4">2 teams of 4</button>
-      <button class="team-mode-btn" id="mode33" data-teams="3" data-size="3">3 teams of 3</button>
-      <button class="team-mode-btn" id="mode42" data-teams="4" data-size="2">4 teams of 2</button>
+      <button class="team-mode-btn active" data-teams="2" data-size="4">2 of 4</button>
+      <button class="team-mode-btn" data-teams="3" data-size="3">3 of 3</button>
+      <button class="team-mode-btn" data-teams="4" data-size="2">4 of 2</button>
     </div>
     <div class="teams-grid" id="teamsGrid">
       <div class="teams-placeholder">Hit shuffle to randomize teams</div>
@@ -494,11 +509,34 @@
   <div class="modal">
     <div class="modal-header">
       <h2>🏆 Scoreboard</h2>
-      <button class="close-btn" id="scoreCloseBtn">✕</button>
+      <button class="close-btn" data-close="scoreOverlay">✕</button>
     </div>
     <div class="score-list" id="scoreList"></div>
     <div class="score-footer">
       <button class="score-reset-btn" id="scoreResetBtn">reset all scores</button>
+    </div>
+  </div>
+</div>
+
+<!-- wheel modal -->
+<div class="modal-overlay" id="wheelOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🎡 Wheel of Fortune</h2>
+      <button class="close-btn" data-close="wheelOverlay">✕</button>
+    </div>
+    <div class="wheel-body">
+      <div class="wheel-input-row">
+        <input class="wheel-input" id="wheelInput" placeholder="Add an item…" maxlength="40"/>
+        <button class="wheel-add-btn" id="wheelAddBtn">Add</button>
+      </div>
+      <div class="wheel-chips" id="wheelChips"></div>
+      <div class="wheel-canvas-wrap">
+        <canvas id="wheelCanvas" width="320" height="320"></canvas>
+      </div>
+      <div class="wheel-result" id="wheelResult"></div>
+      <button class="wheel-spin-btn" id="wheelSpinBtn">🎡 Spin</button>
+      <button class="wheel-clear-btn" id="wheelClearBtn">clear all</button>
     </div>
   </div>
 </div>
@@ -510,23 +548,24 @@
       <h2>📖 Rulebook</h2>
       <div class="modal-header-right">
         <button class="lock-btn" id="lockBtn">🔓 Unlock</button>
-        <button class="close-btn" id="closeBtn">✕</button>
+        <button class="close-btn" data-close="modalOverlay">✕</button>
       </div>
     </div>
     <div class="modal-body">
-      <textarea class="rules-textarea" id="rulesTextarea" placeholder="Write your house rules here... they'll save automatically and survive reloads!" disabled></textarea>
+      <textarea class="rules-textarea" id="rulesTextarea" placeholder="Write your house rules here… they'll save automatically and survive reloads!" disabled></textarea>
       <div class="modal-hint" id="modalHint">🔒 locked — hit Unlock to edit</div>
     </div>
   </div>
 </div>
 
+<!-- main stage -->
 <div class="stage">
   <div class="masthead">
     <h1><span>Sketchbomb</span></h1>
     <p>pick a bank, pick your teams, hit generate</p>
   </div>
 
-  <div class="bank-row" id="bankRow">
+  <div class="bank-row">
     <button class="bank-btn active" data-bank="classic">🎨 Classic</button>
     <button class="bank-btn" data-bank="pop">🎬 Pop Culture</button>
   </div>
@@ -540,9 +579,9 @@
     </div>
   </div>
 
-  <div class="card" id="card">
+  <div class="card">
     <div class="words-grid count-1" id="wordsGrid">
-      <div class="placeholder" id="placeholder">your word will appear here</div>
+      <div class="placeholder">your word will appear here</div>
     </div>
   </div>
 
@@ -555,10 +594,8 @@
 </div>
 
 <script>
-// ============ BANK 1: CLASSIC ============
-// Each entry: plain word/phrase. Flat pool: every word has equal chance.
+// ── WORD BANKS ──────────────────────────────────────────────────────────────
 const WORDS_CLASSIC = [
-  // --- sound-it-out / abstract / requires cleverness ---
   "Claustrophobia","Arachnophobia","Narcolepsy","Bioluminescence",
   "Metamorphosis","Hallucination","Electrocution","Decomposition",
   "Impersonation","Reincarnation","Photosynthesis","Echolocation",
@@ -571,8 +608,6 @@ const WORDS_CLASSIC = [
   "Decapitation","Procrastination","Serendipity","Coincidence",
   "Hypocrisy","Cognitive dissonance","Stockholm syndrome",
   "Existential crisis","Miscommunication","Overthinking","Paradox",
-
-  // --- idioms & concepts that need lateral thinking ---
   "Awkward silence","Secondhand embarrassment","Jumping to conclusions",
   "Walking on eggshells","Breaking the ice","Thinking outside the box",
   "A slippery slope","The elephant in the room","A blessing in disguise",
@@ -586,257 +621,217 @@ const WORDS_CLASSIC = [
   "Barking up the wrong tree","Between a rock and a hard place",
   "Costs an arm and a leg","Dont cry over spilled milk",
   "Bite off more than you can chew","Spill the beans","Jump the shark",
-
-  // --- nearly impossible objects ---
   "Rube Goldberg machine","Circuit breaker","Stud finder",
   "Carbon monoxide detector","Surge protector","Tire pressure gauge",
   "Paper shredder","Barcode scanner","QR code","USB dongle","HDMI adapter",
-
-  // --- science concepts (not drawable directly) ---
   "Circadian rhythm","Placebo effect","Doppler effect",
   "Radioactive decay","Natural selection","Genetic mutation",
   "Nuclear fission","Osmosis","Entropy","Tectonic plate",
   "Singularity","Mycelium","Cognitive bias","Confirmation bias",
-
-  // --- situations & actions requiring a scene ---
   "Skydiving","Hitchhiking","Trespassing","Eavesdropping",
   "Photobombing","Bungee jumping","Sleepwalking","Jailbreak",
   "Manhunt","Ambush","Standoff","Heist","Stakeout",
   "Smuggling","Hostage","Alibi","Getaway","Airdrop",
   "Doomscrolling","Cosplay","Deepfake","Cloning","Cryogenics",
-
-  // --- roles that require depicting an action not just a person ---
   "Pickpocket","Taxidermist","Safecracker","Counterfeiter",
   "Whistleblower","Informant","Bounty hunter","Cult leader",
   "Getaway driver","Undercover cop","Double agent","Con artist",
   "Paparazzo","Puppeteer","Auctioneer","Falconer",
-
-  // --- crime & spy scenes (multi-element, not one drawing) ---
   "Police lineup","Interrogation room","Escape tunnel",
   "Forged painting","Crime scene","Wanted poster","Skeleton key",
   "Witness protection","Underground railroad","Tripwire",
-
-  // --- events / phenomena needing a scene ---
   "Pandemic","Blackout","Riot","Siege","Coup","Evacuation",
   "Quarantine","Witch hunt","Mass hysteria","Flash mob",
   "Chain reaction","Butterfly effect","Domino effect",
   "Scorched earth","Blockade","Exile",
-
-  // --- abstract feelings / states ---
   "Wanderlust","Homesickness","Insomnia","Amnesia","Paranoia",
   "Nostalgia","Deja vu","Sixth sense","Cabin fever","Burnout",
   "Heartbreak","Jet lag","Writers block","Blind date",
   "Cold turkey","Plot twist","Culture shock","Peer pressure",
   "Impostor syndrome","Separation anxiety","Commitment phobia",
-
-  // --- concepts needing creative depiction ---
   "Propaganda","Censorship","Conspiracy","Superstition",
   "Brainwashing","Scapegoat","Martyr",
   "Red herring","Urban legend","Time travel","Virtual reality",
-  "Ghost town","Ghost ship",
-  "Gentrification","Migration","Deportation","Asylum",
-
-  // --- complex multi-part scenes ---
+  "Ghost town","Ghost ship","Gentrification","Migration","Deportation","Asylum",
   "Medieval banquet","Castle siege","Escape room","Masquerade",
   "Drive-in theater","Scavenger hunt","Haunted house","Coronation",
   "Award ceremony","House of cards","Domino chain","Time bomb",
   "Secret passage","Hidden compartment","Trapdoor","False bottom",
-
-  // --- science / nature needing interpretation ---
   "Sinkhole","Whirlpool","Mirage","Stampede",
   "Flood","Drought","Famine","Sabotage","Explosion",
   "Camouflage","Hibernation","Domestication","Extinction",
   "Symbiosis","Parasite",
-
-  // --- modern concepts needing lateral depiction ---
   "Going viral","Cancel culture","Fake news",
   "Influencer","Ghosting","Catfishing",
   "Identity theft","Surveillance","Digital detox",
   "Gaslighting","Manipulation","Conspiracy theory",
 ];
 
-// ============ BANK 2: POP CULTURE ============
-// Movies, TV shows, books, video games, characters, and iconic objects.
 const WORDS_POP = [
-  // --- movies ---
   "Jurassic Park","The Matrix","Jaws","E.T. the Extra-Terrestrial","Titanic",
   "Inception","The Godfather","Star Wars","Back to the Future","Ghostbusters",
   "Home Alone","The Lion King","Frozen","Shrek","Toy Story",
-  "The Avengers","Harry Potter and the Sorcerer's Stone","The Wizard of Oz",
-  "Indiana Jones","Pirates of the Caribbean","Mad Max","Mission Impossible",
-  "James Bond","The Terminator","Alien","Rocky","Forrest Gump",
-  "The Truman Show","Groundhog Day","Casablanca","Psycho","The Shining",
-  "Finding Nemo","Up","WALL-E","Coco","The Incredibles","Moana",
-  "Spider-Man","Batman","Superman","Wonder Woman","Black Panther","Iron Man",
-  "Guardians of the Galaxy","Deadpool","Jumanji","The Hunger Games",
-  "Twilight","La La Land","Fight Club","Pulp Fiction","King Kong",
-  "Godzilla","The Grinch","Willy Wonka and the Chocolate Factory",
-  "Mary Poppins","Singin' in the Rain","The Sound of Music","Grease",
-
-  // --- TV shows ---
+  "The Avengers","The Wizard of Oz","Indiana Jones","Pirates of the Caribbean",
+  "Mad Max","The Terminator","Alien","Rocky","Forrest Gump",
+  "The Truman Show","Groundhog Day","Psycho","The Shining",
+  "Finding Nemo","WALL-E","Coco","The Incredibles","Moana",
+  "Spider-Man","Batman","The Hunger Games","Fight Club","Pulp Fiction",
+  "King Kong","Godzilla","Willy Wonka and the Chocolate Factory",
+  "Mary Poppins","The Sound of Music","Grease",
   "Friends","The Office","Breaking Bad","Game of Thrones","Stranger Things",
   "The Simpsons","SpongeBob SquarePants","South Park","Rick and Morty",
   "The Mandalorian","Seinfeld","The Sopranos","Lost","Doctor Who",
-  "Sherlock","The Walking Dead","Grey's Anatomy","How I Met Your Mother",
-  "Parks and Recreation","Brooklyn Nine-Nine","The Big Bang Theory",
-  "Avatar The Last Airbender","Scooby-Doo","Tom and Jerry","Peaky Blinders",
-  "Money Heist","Squid Game","Ted Lasso","The Crown","Black Mirror",
-  "Downton Abbey","Star Trek",
-
-  // --- books ---
+  "Sherlock","The Walking Dead","How I Met Your Mother",
+  "Parks and Recreation","Brooklyn Nine-Nine",
+  "Avatar The Last Airbender","Scooby-Doo","Peaky Blinders",
+  "Money Heist","Squid Game","Ted Lasso","Black Mirror","Star Trek",
   "Harry Potter","The Hobbit","The Lord of the Rings","Alice in Wonderland",
-  "Charlotte's Web","Moby Dick","The Great Gatsby","To Kill a Mockingbird",
-  "1984","Animal Farm","The Cat in the Hat","Green Eggs and Ham",
-  "Where the Wild Things Are","The Very Hungry Caterpillar",
-  "Charlie and the Chocolate Factory","Percy Jackson","A Wrinkle in Time",
+  "Moby Dick","The Great Gatsby","1984","Animal Farm",
+  "Charlie and the Chocolate Factory","Percy Jackson",
   "The Chronicles of Narnia","Frankenstein","Dracula","Sherlock Holmes",
   "Romeo and Juliet","Peter Pan","Pinocchio","The Little Prince",
-  "Winnie the Pooh","Goldilocks and the Three Bears","Jack and the Beanstalk",
-  "Cinderella","The Three Little Pigs","Little Red Riding Hood",
-
-  // --- video games ---
+  "Winnie the Pooh","Jack and the Beanstalk",
   "Super Mario Bros","The Legend of Zelda","Minecraft","Fortnite","Pac-Man",
   "Tetris","Pokemon","Sonic the Hedgehog","Halo","Call of Duty",
-  "Grand Theft Auto","The Sims","Animal Crossing","Among Us","Angry Birds",
-  "Candy Crush","World of Warcraft","Overwatch","Space Invaders",
-  "Donkey Kong","Street Fighter","Mortal Kombat","Resident Evil","Portal",
-  "Tomb Raider","Assassin's Creed","God of War","Fall Guys","Roblox",
-  "Flappy Bird","Doom",
-
-  // --- characters ---
+  "Grand Theft Auto","The Sims","Animal Crossing","Among Us",
+  "World of Warcraft","Space Invaders","Donkey Kong","Street Fighter",
+  "Mortal Kombat","Resident Evil","Portal","Tomb Raider","God of War",
+  "Fall Guys","Doom","Skyrim","Elden Ring","Final Fantasy","Mario Kart",
+  "Super Smash Bros","Guitar Hero","Plants vs Zombies",
   "Darth Vader","Yoda","Mickey Mouse","Homer Simpson","Luke Skywalker",
   "Frodo Baggins","Gandalf","Dumbledore","Hermione Granger","Bugs Bunny",
-  "Buzz Lightyear","Woody","Elsa","Simba","Nemo","Mario","Luigi",
-  "Pikachu","Kirby","Lara Croft","Master Chief","The Grinch",
-  "Dracula","Frankenstein's Monster","E.T.","Chewbacca","R2-D2","C-3PO",
-  "Captain America","Thor","Hulk","Black Widow","Thanos","The Joker",
-  "Freddy Krueger","Jack Sparrow","Winnie the Pooh","Shrek","Donkey",
-  "The Cheshire Cat","Mad Hatter","Scooby-Doo","SpongeBob SquarePants",
-  "Homer Simpson eating a donut","Gollum","Hagrid",
-
-  // --- iconic objects ---
+  "Buzz Lightyear","Woody","Elsa","Simba","Mario","Pikachu",
+  "Lara Croft","Master Chief","The Grinch","Dracula","Chewbacca",
+  "R2-D2","Captain America","Thanos","The Joker","Freddy Krueger",
+  "Jack Sparrow","Shrek","Scooby-Doo","Gollum","Hagrid","Voldemort",
+  "Katniss Everdeen","Captain Hook","Tinker Bell","Ursula","Ariel",
+  "Rapunzel","Olaf","Optimus Prime","Sauron","Wolverine","Deadpool",
+  "Ash Ketchum","Naruto","Goku","Spongebob","Patrick Star",
   "Tie Fighter","DeLorean","Lightsaber","Infinity Gauntlet","Ruby Slippers",
   "The One Ring","Batmobile","Mjolnir","Sorting Hat","Golden Snitch",
   "Flux Capacitor","Millennium Falcon","Proton Pack","Master Sword",
-  "Triforce","Pokeball","Portal Gun","Companion Cube","Excalibur",
+  "Triforce","Pokeball","Portal Gun","Companion Cube",
   "Captain America's Shield","Time Turner","Marauder's Map","Elder Wand",
-  "Spider-Man's Mask","Iron Man Suit","Genie's Lamp","Magic Carpet",
-  "Glass Slipper","Magic Wand","Crystal Ball","Pirate Treasure Chest",
-  "Wanted Poster","Wizard's Staff","Dragon Egg","Enchanted Mirror",
-
-  // --- more movies ---
-  "The Dark Knight","Interstellar","Gladiator","Avatar","The Lion King",
-  "Cast Away","Jurassic World","The Sixth Sense","Edward Scissorhands",
-  "Beetlejuice","The Nightmare Before Christmas","Men in Black",
-  "Men in Black flashing the neuralyzer","Independence Day","Armageddon",
-  "The Matrix bullet dodge","300","Braveheart","Gladiator arena fight",
-  "The Karate Kid","Rocky training montage","Rain Man","Big",
-  "The Princess Bride","Willy Wonka's chocolate river","Hocus Pocus",
+  "Iron Man Suit","Genie's Lamp","Magic Carpet","Glass Slipper",
+  "Dragon Egg","Enchanted Mirror","Hogwarts Express","Nimbus 2000",
+  "Poison Apple","Magic Beans","Batarang","The Bat-Signal",
+  "Freddy Krueger's Glove","Ghostbusters Proton Pack","Chucky Doll",
+  "The Dark Knight","Interstellar","Gladiator","Avatar",
+  "Cast Away","The Sixth Sense","Edward Scissorhands","Beetlejuice",
+  "The Nightmare Before Christmas","Men in Black","Independence Day",
+  "The Karate Kid","Big","The Princess Bride","Hocus Pocus",
   "Beauty and the Beast","Aladdin","The Little Mermaid","Tangled",
-  "Zootopia","Ratatouille","Monsters Inc","Despicable Me","Minions",
-  "Kung Fu Panda","How to Train Your Dragon","The Polar Express",
-  "Elf","A Christmas Story","National Lampoon's Christmas Vacation",
-
-  // --- more TV shows ---
-  "MythBusters","American Idol","Survivor","The Bachelor","Shark Tank",
-  "Jeopardy","Wheel of Fortune","Are You Smarter Than a 5th Grader",
-  "Cops","America's Got Talent","Dancing with the Stars","The Voice",
-  "Naruto","Dragon Ball Z","One Piece","Attack on Titan","Pokemon anime",
-  "My Little Pony","Paw Patrol","Bluey","Peppa Pig","Teletubbies",
-  "Power Rangers","Ninja Turtles","Ben 10","Phineas and Ferb",
-  "Gravity Falls","The Fairly OddParents","Curious George",
-
-  // --- more books ---
-  "The Da Vinci Code","Jurassic Park novel","Jaws novel","Fahrenheit 451",
-  "Brave New World","The Catcher in the Rye","Of Mice and Men",
-  "Lord of the Flies","The Giver","Holes","Matilda","James and the Giant Peach",
-  "The BFG","Fantastic Mr Fox","The Wind in the Willows","Watership Down",
-  "The Jungle Book","Treasure Island","Robinson Crusoe","Gulliver's Travels",
-  "Don Quixote","The Odyssey","Beowulf","Paradise Lost",
-
-  // --- more video games ---
-  "Fallout","Skyrim","Cyberpunk 2077","Red Dead Redemption","Battlefield",
-  "Apex Legends","League of Legends","Dota 2","Valorant","Rocket League",
-  "Stardew Valley","Terraria","Slime Rancher","Kirby Star Allies",
-  "Metroid","Bioshock","Dark Souls","Elden Ring","Final Fantasy",
-  "Kingdom Hearts","Splatoon","Super Smash Bros","Mario Kart","Wii Sports",
-  "Just Dance","Guitar Hero","DDR Dance Dance Revolution","Plants vs Zombies",
-
-  // --- more characters ---
-  "Voldemort","Ron Weasley","Katniss Everdeen","Percy Jackson","Aslan",
-  "The White Witch","Captain Jack Sparrow","Willy Wonka","Oompa Loompa",
-  "The Mad Hatter","The Queen of Hearts","Peter Pan","Captain Hook",
-  "Tinker Bell","Aladdin","Jasmine","Genie","Ursula","Ariel","Belle",
-  "The Beast","Rapunzel","Flynn Rider","Moana","Maui","Elsa and Anna",
-  "Olaf","Po the Panda","Shrek and Donkey","Puss in Boots","Optimus Prime",
-  "Bumblebee","Megatron","Sauron","Gollum and Sméagol","Legolas",
-  "Aragorn","Bilbo Baggins","Smaug","Doctor Strange","Loki","Rocket Raccoon",
-  "Groot","Deadpool","Wolverine","Professor X","Magneto","Ash Ketchum",
-
-  // --- more iconic objects ---
-  "Web-Shooters","The Iron Throne","Dragon Glass","Valyrian Steel Sword",
-  "Genie's Magic Lamp","Aladdin's Flying Carpet","The Death Star",
-  "Han Solo's Blaster","Captain Hook's Hook","Peter Pan's Shadow",
-  "Cinderella's Pumpkin Carriage","The Hogwarts Express","Nimbus 2000 Broomstick",
-  "The Philosopher's Stone","Poison Apple","Magic Beans","The Holy Grail",
-  "Thor's Hammer","Wonder Woman's Lasso","Batarang","The Bat-Signal",
-  "Freddy Krueger's Glove","Chucky Doll","Ghostbusters Proton Pack",
+  "Ratatouille","Monsters Inc","Despicable Me","Kung Fu Panda",
+  "How to Train Your Dragon","Elf","MythBusters","Shark Tank",
+  "Jeopardy","Survivor","Naruto","Dragon Ball Z","Attack on Titan",
+  "Power Rangers","Ninja Turtles","Phineas and Ferb","Gravity Falls",
+  "The Da Vinci Code","Fahrenheit 451","Lord of the Flies",
+  "The Giver","Matilda","James and the Giant Peach","The BFG",
+  "Treasure Island","Gulliver's Travels","Beowulf",
+  "Fallout","Cyberpunk 2077","Red Dead Redemption","Apex Legends",
+  "League of Legends","Rocket League","Stardew Valley","Bioshock",
+  "Kingdom Hearts","Splatoon","Wii Sports","Dance Dance Revolution",
 ];
 
 const BANKS = {
-  classic: { label: "Classic", words: WORDS_CLASSIC },
-  pop:     { label: "Pop Culture", words: WORDS_POP },
+  classic: { words: WORDS_CLASSIC },
+  pop:     { words: WORDS_POP },
 };
 
 let currentBankKey = "classic";
 function getBank(){ return BANKS[currentBankKey]; }
+function safeParse(j){ try{ return JSON.parse(j); }catch(e){ return null; } }
 
-function safeParse(json){
-  try { return JSON.parse(json); } catch(e){ return null; }
+// ── STATE ────────────────────────────────────────────────────────────────────
+let selectedQty = 2;
+let drawnCount  = 0;
+let usedWordIndices = [];
+let bannedIndices   = [];
+
+function usedKey()  { return "sketchbomb_used_"   + currentBankKey; }
+function bannedKey(){ return "sketchbomb_banned_" + currentBankKey; }
+function loadBankState(){
+  usedWordIndices = safeParse(localStorage.getItem(usedKey()))   || [];
+  bannedIndices   = safeParse(localStorage.getItem(bannedKey())) || [];
 }
+function saveUsed()   { localStorage.setItem(usedKey(),   JSON.stringify(usedWordIndices)); }
+function saveBanned() { localStorage.setItem(bannedKey(), JSON.stringify(bannedIndices));   }
 
+// ── DOM REFS ─────────────────────────────────────────────────────────────────
 const wordsGrid   = document.getElementById("wordsGrid");
 const remainingEl = document.getElementById("remaining");
 const counterEl   = document.getElementById("counter");
 const generateBtn = document.getElementById("generateBtn");
-const qtyBtns     = document.querySelectorAll(".qty-btn");
-const bankBtns    = document.querySelectorAll(".bank-btn");
 
-let selectedQty = 2;
-let drawnCount = 0;
+// ── TRAY / HAMBURGER ─────────────────────────────────────────────────────────
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const trayOverlay  = document.getElementById("trayOverlay");
 
-qtyBtns.forEach(btn => {
+hamburgerBtn.addEventListener("click", () => trayOverlay.classList.toggle("open"));
+trayOverlay.addEventListener("click", e => { if(e.target === trayOverlay) trayOverlay.classList.remove("open"); });
+
+document.querySelectorAll(".tray-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const modalId = item.dataset.modal;
+    trayOverlay.classList.remove("open");
+    const overlay = document.getElementById(modalId);
+    if(overlay){
+      // pre-render modals that need it
+      if(modalId === "scoreOverlay")   renderScores();
+      if(modalId === "historyOverlay") renderHistory();
+      if(modalId === "wheelOverlay")   drawWheel();
+      overlay.classList.add("open");
+    }
+  });
+});
+
+// generic close buttons
+document.querySelectorAll(".close-btn[data-close]").forEach(btn => {
   btn.addEventListener("click", () => {
-    qtyBtns.forEach(b => b.classList.remove("active"));
+    document.getElementById(btn.dataset.close).classList.remove("open");
+  });
+});
+
+// close modal on overlay click
+document.querySelectorAll(".modal-overlay").forEach(overlay => {
+  overlay.addEventListener("click", e => { if(e.target === overlay) overlay.classList.remove("open"); });
+});
+
+// ── QTY + BANK ───────────────────────────────────────────────────────────────
+document.querySelectorAll(".qty-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".qty-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     selectedQty = parseInt(btn.dataset.qty);
   });
 });
 
-// per-bank used/banned state, stored under bank-specific keys so the two
-// generators never share or clash with each other's history
-let usedWordIndices = [];
-let bannedIndices = [];
+document.querySelectorAll(".bank-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if(btn.dataset.bank === currentBankKey) return;
+    document.querySelectorAll(".bank-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentBankKey = btn.dataset.bank;
+    loadBankState();
+    wordsGrid.innerHTML = '<div class="placeholder">your word will appear here</div>';
+    wordsGrid.className = "words-grid count-1";
+    drawnCount = 0;
+    counterEl.textContent = "0 words drawn this session";
+    updateRemaining();
+    renderHistory();
+  });
+});
 
-function usedKey(){ return "sketchbomb_used_" + currentBankKey; }
-function bannedKey(){ return "sketchbomb_banned_" + currentBankKey; }
-
-function loadBankState(){
-  usedWordIndices = safeParse(localStorage.getItem(usedKey())) || [];
-  bannedIndices = safeParse(localStorage.getItem(bannedKey())) || [];
-}
-function saveUsed(){ localStorage.setItem(usedKey(), JSON.stringify(usedWordIndices)); }
-function saveBanned(){ localStorage.setItem(bannedKey(), JSON.stringify(bannedIndices)); }
-
+// ── WORD GENERATOR ───────────────────────────────────────────────────────────
 function updateRemaining(){
   const total = getBank().words.length;
-  const left = total - bannedIndices.length - usedWordIndices.length;
-  remainingEl.textContent = Math.max(0, left) + " left before repeats";
+  const left  = Math.max(0, total - bannedIndices.length - usedWordIndices.length);
+  remainingEl.textContent = left + " left before repeats";
 }
 
 function getWord(){
   const words = getBank().words;
-  const pool = words.map((_, i) => i);
+  const pool  = words.map((_, i) => i);
   let available = pool.filter(i => !usedWordIndices.includes(i) && !bannedIndices.includes(i));
   if(available.length === 0){
     usedWordIndices = [];
@@ -850,15 +845,12 @@ function getWord(){
 }
 
 function attachReroll(el, teamLabel){
-  const btn = el.querySelector(".reroll-btn");
-  btn.onclick = null;
-  btn.addEventListener("click", () => {
+  el.querySelector(".reroll-btn").addEventListener("click", () => {
     const idx = parseInt(el.dataset.idx);
     if(!bannedIndices.includes(idx)) bannedIndices.push(idx);
     saveBanned();
     usedWordIndices = usedWordIndices.filter(i => i !== idx);
     saveUsed();
-
     const { word: newWord, idx: newIdx } = getWord();
     el.dataset.idx = newIdx;
     el.classList.remove("show");
@@ -873,9 +865,7 @@ function attachReroll(el, teamLabel){
 generateBtn.addEventListener("click", () => {
   wordsGrid.innerHTML = "";
   wordsGrid.className = "words-grid count-" + selectedQty;
-
   const labels = ["Team A","Team B","Team C","Team D"].slice(0, selectedQty);
-
   labels.forEach((label, i) => {
     const { word, idx } = getWord();
     const el = document.createElement("div");
@@ -886,41 +876,18 @@ generateBtn.addEventListener("click", () => {
     wordsGrid.appendChild(el);
     setTimeout(() => el.classList.add("show"), i * 100);
   });
-
   updateRemaining();
   drawnCount += selectedQty;
   counterEl.textContent = drawnCount + " words drawn this session";
 });
 
-// --- bank switcher ---
-bankBtns.forEach(btn => {
-  btn.addEventListener("click", () => {
-    if(btn.dataset.bank === currentBankKey) return;
-    bankBtns.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentBankKey = btn.dataset.bank;
-    loadBankState();
-    wordsGrid.innerHTML = '<div class="placeholder">your word will appear here</div>';
-    wordsGrid.className = "words-grid count-1";
-    updateRemaining();
-    // if the history modal is open on this bank, refresh it
-    renderHistory();
-  });
-});
-
-// load initial bank state + show count on load
 loadBankState();
 updateRemaining();
 
-// --- rulebook ---
-const rulebookBtn   = document.getElementById("rulebookBtn");
-const modalOverlay  = document.getElementById("modalOverlay");
-const closeBtn      = document.getElementById("closeBtn");
+// ── RULEBOOK ─────────────────────────────────────────────────────────────────
 const lockBtn       = document.getElementById("lockBtn");
 const rulesTextarea = document.getElementById("rulesTextarea");
 const modalHint     = document.getElementById("modalHint");
-
-const STORAGE_KEY = "sketchbomb_rules";
 let isLocked = true;
 
 function setLocked(val){
@@ -928,100 +895,59 @@ function setLocked(val){
   rulesTextarea.disabled = isLocked;
   lockBtn.textContent = isLocked ? "🔓 Unlock" : "🔒 Lock";
   lockBtn.classList.toggle("locked", !isLocked);
-  modalHint.textContent = isLocked
-    ? "🔒 locked — hit Unlock to edit"
-    : "✏️ editing — changes save automatically";
+  modalHint.textContent = isLocked ? "🔒 locked — hit Unlock to edit" : "✏️ editing — changes save automatically";
 }
 
-// load saved rules on startup
-rulesTextarea.value = localStorage.getItem(STORAGE_KEY) || "";
-
-rulebookBtn.addEventListener("click", () => modalOverlay.classList.add("open"));
-closeBtn.addEventListener("click",    () => modalOverlay.classList.remove("open"));
-modalOverlay.addEventListener("click", e => { if(e.target === modalOverlay) modalOverlay.classList.remove("open"); });
-
+rulesTextarea.value = localStorage.getItem("sketchbomb_rules") || "";
 lockBtn.addEventListener("click", () => setLocked(!isLocked));
-
-rulesTextarea.addEventListener("input", () => {
-  localStorage.setItem(STORAGE_KEY, rulesTextarea.value);
-});
-
-// start locked
+rulesTextarea.addEventListener("input", () => localStorage.setItem("sketchbomb_rules", rulesTextarea.value));
 setLocked(true);
 
-// --- scoreboard ---
-const PLAYERS = ["Frank","Asher","Ethan","Rikhin","Henry","Jake","Eli","Dylan","John"];
+// ── SCOREBOARD ───────────────────────────────────────────────────────────────
+const PLAYERS   = ["Frank","Asher","Ethan","Rikhin","Henry","Jake","Eli","Dylan","John"];
 const SCORE_KEY = "sketchbomb_scores";
 
-const scoreOverlay  = document.getElementById("scoreOverlay");
-const scoreBoardBtn = document.getElementById("scoreBoardBtn");
-const scoreCloseBtn = document.getElementById("scoreCloseBtn");
-const scoreResetBtn = document.getElementById("scoreResetBtn");
-const scoreList     = document.getElementById("scoreList");
-
-function loadScores(){
-  return safeParse(localStorage.getItem(SCORE_KEY)) || {};
-}
+function loadScores(){ return safeParse(localStorage.getItem(SCORE_KEY)) || {}; }
 function saveScores(s){ localStorage.setItem(SCORE_KEY, JSON.stringify(s)); }
 
 function renderScores(){
+  const scoreList = document.getElementById("scoreList");
   const scores = loadScores();
   const sorted = [...PLAYERS].sort((a,b) => (scores[b]||0) - (scores[a]||0));
   scoreList.innerHTML = "";
   sorted.forEach((name, i) => {
     const val = scores[name] || 0;
-    const rankClass = i === 0 ? "gold" : i === 1 ? "silver" : i === 2 ? "bronze" : "";
-    const rankLabel = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : (i+1);
+    const rankClass = i===0?"gold":i===1?"silver":i===2?"bronze":"";
+    const rankLabel = i===0?"🥇":i===1?"🥈":i===2?"🥉":(i+1);
     const row = document.createElement("div");
     row.className = "score-row";
     row.innerHTML = `
       <div class="score-rank ${rankClass}">${rankLabel}</div>
       <div class="score-name">${name}</div>
       <div class="score-controls">
-        <button class="score-dec" data-name="${name}" ${val <= 0 ? "disabled" : ""}>−</button>
+        <button class="score-dec" data-name="${name}" ${val<=0?"disabled":""}>−</button>
         <div class="score-val">${val}</div>
         <button class="score-inc" data-name="${name}">+</button>
       </div>`;
     scoreList.appendChild(row);
   });
-
-  scoreList.querySelectorAll(".score-inc").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const s = loadScores();
-      s[btn.dataset.name] = (s[btn.dataset.name] || 0) + 1;
-      saveScores(s); renderScores();
-    });
-  });
-  scoreList.querySelectorAll(".score-dec").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const s = loadScores();
-      s[btn.dataset.name] = Math.max(0, (s[btn.dataset.name] || 0) - 1);
-      saveScores(s); renderScores();
-    });
-  });
+  scoreList.querySelectorAll(".score-inc").forEach(btn => btn.addEventListener("click", () => {
+    const s = loadScores(); s[btn.dataset.name] = (s[btn.dataset.name]||0)+1; saveScores(s); renderScores();
+  }));
+  scoreList.querySelectorAll(".score-dec").forEach(btn => btn.addEventListener("click", () => {
+    const s = loadScores(); s[btn.dataset.name] = Math.max(0,(s[btn.dataset.name]||0)-1); saveScores(s); renderScores();
+  }));
 }
 
-scoreBoardBtn.addEventListener("click", () => { renderScores(); scoreOverlay.classList.add("open"); });
-scoreCloseBtn.addEventListener("click", () => scoreOverlay.classList.remove("open"));
-scoreOverlay.addEventListener("click", e => { if(e.target === scoreOverlay) scoreOverlay.classList.remove("open"); });
-scoreResetBtn.addEventListener("click", () => { saveScores({}); renderScores(); });
+document.getElementById("scoreResetBtn").addEventListener("click", () => { saveScores({}); renderScores(); });
 
-// --- team randomizer ---
-const TEAM_NAMES = ["Team 1","Team 2","Team 3","Team 4"];
+// ── TEAM RANDOMIZER ──────────────────────────────────────────────────────────
 const TEAM_COLORS = ["#D9584B","#6C7BD1","#4FB477","#E3A93B"];
-
-const teamsBtn       = document.getElementById("teamsBtn");
-const teamsOverlay   = document.getElementById("teamsOverlay");
-const teamsCloseBtn  = document.getElementById("teamsCloseBtn");
-const teamsGrid      = document.getElementById("teamsGrid");
-const reshuffleBtn   = document.getElementById("reshuffleBtn");
-const modeBtns       = document.querySelectorAll(".team-mode-btn");
-
 let teamCount = 2, teamSize = 4;
 
-modeBtns.forEach(btn => {
+document.querySelectorAll(".team-mode-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    modeBtns.forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".team-mode-btn").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
     teamCount = parseInt(btn.dataset.teams);
     teamSize  = parseInt(btn.dataset.size);
@@ -1029,126 +955,223 @@ modeBtns.forEach(btn => {
   });
 });
 
-function shuffle(arr){
-  const a = [...arr];
-  for(let i = a.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+function shuffle(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a; }
 
 function renderTeams(){
-  const shuffled = shuffle(PLAYERS);
-  const total = shuffled.length;
-  const base = Math.floor(total / teamCount);
-  const extra = total % teamCount; // first `extra` teams absorb the leftover players
+  const teamsGrid = document.getElementById("teamsGrid");
+  const shuffled  = shuffle(PLAYERS);
+  const base  = Math.floor(shuffled.length / teamCount);
+  const extra = shuffled.length % teamCount;
   teamsGrid.innerHTML = "";
   let cursor = 0;
-  for(let t = 0; t < teamCount; t++){
+  for(let t=0; t<teamCount; t++){
     const size = base + (t < extra ? 1 : 0);
     const members = shuffled.slice(cursor, cursor + size);
     cursor += size;
     const card = document.createElement("div");
     card.className = "team-card";
-    card.innerHTML = `
-      <div class="team-label" style="color:${TEAM_COLORS[t]}">${TEAM_NAMES[t]}</div>
-      <div class="team-members">${members.join(" · ")}</div>`;
+    card.innerHTML = `<div class="team-label" style="color:${TEAM_COLORS[t]}">Team ${t+1}</div><div class="team-members">${members.join(" · ")}</div>`;
     teamsGrid.appendChild(card);
     setTimeout(() => card.classList.add("show"), t * 80);
   }
 }
 
-teamsBtn.addEventListener("click", () => teamsOverlay.classList.add("open"));
-teamsCloseBtn.addEventListener("click", () => teamsOverlay.classList.remove("open"));
-teamsOverlay.addEventListener("click", e => { if(e.target === teamsOverlay) teamsOverlay.classList.remove("open"); });
-reshuffleBtn.addEventListener("click", renderTeams);
+document.getElementById("reshuffleBtn").addEventListener("click", renderTeams);
 
-// --- word history ---
-const historyBtn      = document.getElementById("historyBtn");
-const historyOverlay  = document.getElementById("historyOverlay");
-const historyCloseBtn = document.getElementById("historyCloseBtn");
-const tabUsed         = document.getElementById("tabUsed");
-const tabBanned       = document.getElementById("tabBanned");
-const wordList        = document.getElementById("wordList");
-const historyClearBtn = document.getElementById("historyClearBtn");
-
+// ── WORD HISTORY ─────────────────────────────────────────────────────────────
 let activeTab = "used";
 
 function renderHistory(){
-  const words = getBank().words;
+  const words   = getBank().words;
+  const wordList = document.getElementById("wordList");
+  const clearBtn = document.getElementById("historyClearBtn");
   wordList.innerHTML = "";
   if(activeTab === "used"){
-    historyClearBtn.textContent = "clear used words";
-    const used = usedWordIndices.map(i => words[i]);
-    if(used.length === 0){
-      wordList.innerHTML = '<div class="word-list-empty">No words used yet</div>';
-    } else {
-      [...used].reverse().forEach(w => {
-        const item = document.createElement("div");
-        item.className = "word-list-item";
-        item.textContent = w;
-        wordList.appendChild(item);
-      });
-    }
+    clearBtn.textContent = "clear used words";
+    const used = usedWordIndices.map(i => words[i]).filter(Boolean);
+    if(!used.length){ wordList.innerHTML = '<div class="word-list-empty">No words used yet</div>'; return; }
+    [...used].reverse().forEach(w => {
+      const item = document.createElement("div");
+      item.className = "word-list-item"; item.textContent = w;
+      wordList.appendChild(item);
+    });
   } else {
-    historyClearBtn.textContent = "unban all words";
-    const banned = bannedIndices.map(i => words[i]);
-    if(banned.length === 0){
-      wordList.innerHTML = '<div class="word-list-empty">No banned words</div>';
-    } else {
-      [...banned].reverse().forEach((w, ri) => {
-        const realIdx = bannedIndices[bannedIndices.length - 1 - ri];
-        const item = document.createElement("div");
-        item.className = "word-list-item banned";
-        item.innerHTML = `<span>${w}</span><button class="unban-btn" data-idx="${realIdx}">unban</button>`;
-        item.querySelector(".unban-btn").addEventListener("click", () => {
-          const idx = parseInt(item.querySelector(".unban-btn").dataset.idx);
-          bannedIndices = bannedIndices.filter(i => i !== idx);
-          saveBanned();
-          updateRemaining();
-          renderHistory();
-        });
-        wordList.appendChild(item);
+    clearBtn.textContent = "unban all words";
+    const banned = bannedIndices.map(i => words[i]).filter(Boolean);
+    if(!banned.length){ wordList.innerHTML = '<div class="word-list-empty">No banned words</div>'; return; }
+    [...banned].reverse().forEach((w, ri) => {
+      const realIdx = bannedIndices[bannedIndices.length - 1 - ri];
+      const item = document.createElement("div");
+      item.className = "word-list-item banned";
+      item.innerHTML = `<span>${w}</span><button class="unban-btn" data-idx="${realIdx}">unban</button>`;
+      item.querySelector(".unban-btn").addEventListener("click", () => {
+        bannedIndices = bannedIndices.filter(i => i !== realIdx);
+        saveBanned(); updateRemaining(); renderHistory();
       });
-    }
+      wordList.appendChild(item);
+    });
   }
 }
 
-tabUsed.addEventListener("click", () => {
+document.getElementById("tabUsed").addEventListener("click", () => {
   activeTab = "used";
-  tabUsed.classList.add("active");
-  tabBanned.classList.remove("active");
+  document.getElementById("tabUsed").classList.add("active");
+  document.getElementById("tabBanned").classList.remove("active");
   renderHistory();
 });
-
-tabBanned.addEventListener("click", () => {
+document.getElementById("tabBanned").addEventListener("click", () => {
   activeTab = "banned";
-  tabBanned.classList.add("active");
-  tabUsed.classList.remove("active");
+  document.getElementById("tabBanned").classList.add("active");
+  document.getElementById("tabUsed").classList.remove("active");
   renderHistory();
 });
 
-historyClearBtn.addEventListener("click", () => {
+document.getElementById("historyClearBtn").addEventListener("click", () => {
   if(activeTab === "used"){
-    usedWordIndices = [];
-    localStorage.removeItem(usedKey());
-    drawnCount = 0;
-    counterEl.textContent = "0 words drawn this session";
+    usedWordIndices = []; localStorage.removeItem(usedKey());
+    drawnCount = 0; counterEl.textContent = "0 words drawn this session";
     wordsGrid.innerHTML = '<div class="placeholder">your words will appear here</div>';
     wordsGrid.className = "words-grid count-" + selectedQty;
     updateRemaining();
   } else {
-    bannedIndices = [];
-    saveBanned();
-    updateRemaining();
+    bannedIndices = []; saveBanned(); updateRemaining();
   }
   renderHistory();
 });
 
-historyBtn.addEventListener("click", () => { renderHistory(); historyOverlay.classList.add("open"); });
-historyCloseBtn.addEventListener("click", () => historyOverlay.classList.remove("open"));
-historyOverlay.addEventListener("click", e => { if(e.target === historyOverlay) historyOverlay.classList.remove("open"); });
+// ── WHEEL OF FORTUNE ─────────────────────────────────────────────────────────
+const WHEEL_KEY   = "sketchbomb_wheel";
+const wheelInput  = document.getElementById("wheelInput");
+const wheelAddBtn = document.getElementById("wheelAddBtn");
+const wheelChips  = document.getElementById("wheelChips");
+const wheelCanvas = document.getElementById("wheelCanvas");
+const wheelResult = document.getElementById("wheelResult");
+const wheelSpinBtn= document.getElementById("wheelSpinBtn");
+const wheelClearBtn=document.getElementById("wheelClearBtn");
+const ctx         = wheelCanvas.getContext("2d");
+
+const WHEEL_COLORS = ["#D9584B","#6C7BD1","#4FB477","#E3A93B","#E87E4D","#5BBFDE","#C45AB3","#88B04B"];
+let wheelItems   = safeParse(localStorage.getItem(WHEEL_KEY)) || [];
+let wheelAngle   = 0;
+let isSpinning   = false;
+
+function saveWheel(){ localStorage.setItem(WHEEL_KEY, JSON.stringify(wheelItems)); }
+
+function renderChips(){
+  wheelChips.innerHTML = "";
+  wheelItems.forEach((item, i) => {
+    const chip = document.createElement("div");
+    chip.className = "wheel-chip";
+    chip.innerHTML = `<span>${item}</span><button class="chip-remove" data-i="${i}">✕</button>`;
+    chip.querySelector(".chip-remove").addEventListener("click", () => {
+      wheelItems.splice(i, 1); saveWheel(); renderChips(); drawWheel();
+    });
+    wheelChips.appendChild(chip);
+  });
+}
+
+// fix: pointer color needs to be a literal string
+function drawWheel(){
+  const size = wheelCanvas.width;
+  const cx = size/2, cy = size/2, r = size/2 - 4;
+  ctx.clearRect(0, 0, size, size);
+
+  if(wheelItems.length === 0){
+    ctx.fillStyle = "rgba(255,255,255,0.04)";
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = "rgba(245,241,230,0.25)";
+    ctx.font = "14px 'Segoe UI', sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("Add items above", cx, cy);
+    return;
+  }
+
+  const arc = (Math.PI*2) / wheelItems.length;
+  wheelItems.forEach((item, i) => {
+    const start = wheelAngle + i * arc;
+    const end   = start + arc;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end); ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length]; ctx.fill();
+    ctx.strokeStyle = "rgba(27,31,59,0.5)"; ctx.lineWidth = 2; ctx.stroke();
+
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(start + arc/2);
+    ctx.textAlign = "right"; ctx.fillStyle = "#fff";
+    const fontSize = Math.max(10, Math.min(15, 180/wheelItems.length));
+    ctx.font = `bold ${fontSize}px 'Segoe UI', sans-serif`;
+    ctx.shadowColor = "rgba(0,0,0,0.4)"; ctx.shadowBlur = 3;
+    const maxW = r - 20;
+    let label = item;
+    while(ctx.measureText(label).width > maxW && label.length > 3) label = label.slice(0,-1);
+    if(label !== item) label = label.slice(0,-1)+"…";
+    ctx.fillText(label, r-12, 0); ctx.restore();
+  });
+
+  ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2);
+  ctx.fillStyle = "#1B1F3B"; ctx.fill();
+  ctx.strokeStyle = "rgba(245,241,230,0.3)"; ctx.lineWidth = 2; ctx.stroke();
+
+  // pointer
+  ctx.beginPath();
+  ctx.moveTo(cx + r + 2, cy);
+  ctx.lineTo(cx + r - 14, cy - 9);
+  ctx.lineTo(cx + r - 14, cy + 9);
+  ctx.closePath();
+  ctx.fillStyle = "#FCFAF4"; ctx.fill();
+}
+
+function addItem(val){
+  val = val.trim();
+  if(!val || wheelItems.includes(val)) return;
+  wheelItems.push(val);
+  saveWheel(); renderChips(); drawWheel();
+}
+
+wheelAddBtn.addEventListener("click", () => { addItem(wheelInput.value); wheelInput.value = ""; wheelInput.focus(); });
+wheelInput.addEventListener("keydown", e => { if(e.key==="Enter"){ addItem(wheelInput.value); wheelInput.value=""; } });
+
+wheelSpinBtn.addEventListener("click", () => {
+  if(isSpinning || wheelItems.length < 2){ return; }
+  isSpinning = true;
+  wheelSpinBtn.disabled = true;
+  wheelResult.textContent = "";
+
+  const extraSpins  = (5 + Math.floor(Math.random() * 5)) * Math.PI * 2;
+  const arcSize     = (Math.PI * 2) / wheelItems.length;
+  // pick a winner — pointer is at angle 0 (3 o'clock), spinning clockwise
+  const winnerIdx   = Math.floor(Math.random() * wheelItems.length);
+  // target: pointer lands in middle of winner slice
+  const targetAngle = extraSpins - (winnerIdx * arcSize + arcSize/2) - wheelAngle % (Math.PI*2);
+  const startAngle  = wheelAngle;
+  const endAngle    = startAngle + extraSpins + (Math.PI*2 - ((wheelAngle + winnerIdx * arcSize + arcSize/2) % (Math.PI*2)));
+
+  const duration = 4000 + Math.random() * 1500;
+  const startTime = performance.now();
+
+  function easeOut(t){ return 1 - Math.pow(1-t, 4); }
+
+  function animate(now){
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    wheelAngle = startAngle + (extraSpins + targetAngle) * easeOut(t);
+    drawWheel();
+    if(t < 1){ requestAnimationFrame(animate); }
+    else {
+      isSpinning = false;
+      wheelSpinBtn.disabled = false;
+      wheelResult.textContent = "🎉 " + wheelItems[winnerIdx];
+    }
+  }
+  requestAnimationFrame(animate);
+});
+
+wheelClearBtn.addEventListener("click", () => {
+  wheelItems = []; saveWheel(); renderChips(); drawWheel(); wheelResult.textContent = "";
+});
+
+// init wheel
+renderChips();
+drawWheel();
 </script>
 </body>
 </html>
