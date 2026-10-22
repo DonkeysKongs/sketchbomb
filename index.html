@@ -509,9 +509,9 @@
       <button class="close-btn" data-close="teamsOverlay">✕</button>
     </div>
     <div class="team-mode-toggle">
-      <button class="team-mode-btn active" data-teams="2" data-size="4">2 of 4</button>
-      <button class="team-mode-btn" data-teams="3" data-size="3">3 of 3</button>
-      <button class="team-mode-btn" data-teams="4" data-size="2">4 of 2</button>
+      <button class="team-mode-btn active" data-teams="2" data-size="4">2 teams</button>
+      <button class="team-mode-btn" data-teams="3" data-size="3">3 teams</button>
+      <button class="team-mode-btn" data-teams="4" data-size="2">4 teams</button>
     </div>
     <div class="teams-grid" id="teamsGrid">
       <div class="teams-placeholder">Hit shuffle to randomize teams</div>
@@ -972,7 +972,7 @@ rulesTextarea.addEventListener("input", () => localStorage.setItem("sketchbomb_r
 setLocked(true);
 
 // ── SCOREBOARD ───────────────────────────────────────────────────────────────
-const PLAYERS   = ["Frank","Asher","Ethan","Rikhin","Henry","Jake","Eli","Dylan","John"];
+const PLAYERS   = ["Frank","Asher","Ethan","Rikhin","Henry","Jake","Eli","Dylan","John", "Caeden"];
 const SCORE_KEY = "sketchbomb_scores";
 
 function loadScores(){ return safeParse(localStorage.getItem(SCORE_KEY)) || {}; }
